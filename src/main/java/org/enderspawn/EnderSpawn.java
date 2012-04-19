@@ -160,4 +160,19 @@ public class EnderSpawn extends JavaPlugin
 	{		
 		return status((CommandSender) sender, message, playerTime);
 	}
+	
+	public boolean showStatus(Player player)
+	{
+		String playerName = player.getName();
+		
+		if(config.bannedPlayers.get(playerName) != null)
+			return true;
+		
+		long playerTime = 0;
+		
+		if(config.players.get(playerName) != null)
+			playerTime = config.players.get(playerName).getTime();
+		
+		return status(player, false, playerTime);
+	}
 }

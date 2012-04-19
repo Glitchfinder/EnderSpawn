@@ -161,19 +161,6 @@ public class EnderSpawnCommand implements CommandExecutor
 		if(sender instanceof Player)
 			Log.info(((Player)sender).getName() + ": /enderspawn status");
 		
-		String playerName = ((Player) sender).getName();
-		
-		if(plugin.config.bannedPlayers.get(playerName) != null)
-		{
-			Message.info(sender, "You are not allowed to receive Ender Dragon experience.");
-			return true;
-		}
-		
-		long playerTime = 0;
-		
-		if(plugin.config.players.get(playerName) != null)
-			playerTime = plugin.config.players.get(playerName).getTime();
-		
-		return plugin.status(sender, false, playerTime);
+		return plugin.showStatus((Player) sender);
 	}
 }

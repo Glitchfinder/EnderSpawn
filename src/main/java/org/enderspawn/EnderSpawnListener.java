@@ -39,6 +39,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityCreatePortalEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -47,6 +49,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.World;
+import org.bukkit.World.Environment;
 
 public class EnderSpawnListener implements Listener
 {
@@ -183,5 +186,26 @@ public class EnderSpawnListener implements Listener
 			plugin.config.players.put(playerName, new Timestamp(new Date().getTime()));
 			plugin.config.save();
 		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onPlayerTeleport(PlayerTeleportEvent event)
+	{
+		if(event.getTo().getWorld().getEnvironment() != World.Environment.valueOf("THE_END"))
+			return;
+		
+		if(event.getFrom().getWorld().getEnvironment() == World.Environment.valueOf("THE_END"))
+			return;
+		
+		plugin.showStatus(event.getPlayer());
+	}
+	
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onPlayerJoin(PlayerJoinEvent event)
+	{
+		if(event.getPlayer().getWorld().getEnvironment() != World.Environment.valueOf("THE_END"))
+			return;
+		
+		plugin.showStatus(event.getPlayer());
 	}
 }
