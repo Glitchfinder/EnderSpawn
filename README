@@ -1,1 +1,31 @@
 EnderSpawn is a bukkit plugin designed to manage the EnderDragon in The End.
+
+Commands:	
+		
+	- enderspawn reload	- Reloads the configuration.
+		- Aliases: es reload
+		- Usage: /<command>
+
+	- enderspawn ban 	- Bans a player from receiving experience from the enderdragon.
+		- Aliases: es ban
+		- Usage: /<command> [playername] [reason]
+
+	- enderspawn unban	- Allows a player banned from receiving experience from the enderdragon to get it again.
+		- Aliases: es unban
+		- Usage: /<command> [playername]
+
+	- enderspawn lookup	- Allows a player to lookup ban statuses for the plugin.
+		- Aliases: es lookup
+		- Usage: /<command> [playername]
+
+	- enderspawn status	- Allows a player to lookup their experience status for the plugin.
+		- Aliases: es status
+		- Usage: /<command>
+
+Permissions:
+	- enderspawn.*		- Access to everything related to the EnderSpawn plugin.
+	- enderspawn.ban	- Access to the /enderspawn ban and /enderspawn unban commands.
+	- enderspawn.reload	- Access to the /enderspawn reload command.
+	- enderspawn.lookup	- Access to the /enderspawn lookup command.
+	- enderspawn.status	- Access to the /enderspawn status command.
+	- enderspawn.exp	- Access to the experience dropped by the EnderDragon.

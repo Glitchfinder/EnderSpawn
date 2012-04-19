@@ -5,3 +5,34 @@ author: Glitchfinder
 website: https://github.com/Glitchfinder/EnderSpawn
 
 main: org.enderspawn.EnderSpawn
+
+commands:
+  enderspawn:
+    description: Enderspawn command.
+    aliases: ['es']
+    usage: /<command> [reload|ban [playername] [reason]| unban [playername]| lookup [playername]| status]
+
+permissions:
+  enderspawn.*:
+    description: Access to everything related to the EnderSpawn plugin.
+    children:
+      enderspawn.ban: true
+      enderspawn.reload: true
+      enderspawn.lookup: true
+      enderspawn.status: true
+      enderspawn.exp: true
+  enderspawn.ban:
+    description: Access to the /enderspawn ban and /enderspawn unban commands.
+    default: op
+  enderspawn.reload:
+    description: Access to the /enderspawn reload command.
+    default: op
+  enderspawn.lookup:
+    description: Access to the /enderspawn lookup command.
+    default: op
+  enderspawn.status:
+    description: Access to the /enderspawn status command.
+    default: true
+  enderspawn.exp:
+    description: Access to the experience dropped by the EnderDragon.
+    default: true

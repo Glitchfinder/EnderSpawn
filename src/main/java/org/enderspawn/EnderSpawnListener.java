@@ -73,7 +73,7 @@ public class EnderSpawnListener implements Listener
 		if (!(entity instanceof EnderDragon))
 			return;
 		
-		if (plugin.config.destroyBlocks == true)
+		if (plugin.config.destroyBlocks)
 			return;
 		
 		event.blockList().clear();
@@ -95,16 +95,15 @@ public class EnderSpawnListener implements Listener
 			
 			if((block.getType().getId() == 7 || block.getType().getId() == 119 ||
 				block.getType().getId() == 0 || block.getType().getId() == 50) &&
-				plugin.config.spawnPortal == false)
+				!plugin.config.spawnPortal)
 			{
 				blocks.remove(block);
 			}
-			else if(block.getType().getId() == 122 && plugin.config.spawnEgg == false)
+			else if(block.getType().getId() == 122 && !plugin.config.spawnEgg)
 			{
 				blocks.remove(block);
 			}
-			else if(block.getType().getId() == 122 && plugin.config.spawnEgg == true &&
-				plugin.config.spawnPortal == false)
+			else if(block.getType().getId() == 122 && plugin.config.spawnEgg &&	!plugin.config.spawnPortal)
 			{
 				blocks.remove(block);
 				entity.getWorld().dropItemNaturally(entity.getLocation(), new ItemStack(block.getType()));
@@ -176,9 +175,13 @@ public class EnderSpawnListener implements Listener
 			if(time != null && (time.getTime() > requiredTime))
 				continue;
 			
+			if(!(plugin.hasPermission(player, "enderspawn.exp", false)))
+				continue;
+			
 			player.giveExp(droppedEXP);
 			
 			plugin.config.players.put(playerName, new Timestamp(new Date().getTime()));
+			plugin.config.save();
 		}
 	}
 }
