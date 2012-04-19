@@ -199,6 +199,7 @@ public class EnderSpawnListener implements Listener
 		if(event.getFrom().getWorld().getEnvironment() == World.Environment.valueOf("THE_END"))
 			return;
 		
+		plugin.spawner.run();
 		plugin.showStatus(event.getPlayer());
 	}
 	
@@ -208,6 +209,7 @@ public class EnderSpawnListener implements Listener
 		if(event.getPlayer().getWorld().getEnvironment() != World.Environment.valueOf("THE_END"))
 			return;
 		
+		plugin.spawner.run();
 		plugin.showStatus(event.getPlayer());
 	}
 }
