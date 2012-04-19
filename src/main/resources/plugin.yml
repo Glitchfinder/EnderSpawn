@@ -21,6 +21,7 @@ permissions:
       enderspawn.lookup: true
       enderspawn.status: true
       enderspawn.exp: true
+      enderspawn.unlimitedexp: true
   enderspawn.ban:
     description: Access to the /enderspawn ban and /enderspawn unban commands.
     default: op
@@ -36,3 +37,6 @@ permissions:
   enderspawn.exp:
     description: Access to the experience dropped by the EnderDragon.
     default: true
+  enderspawn.unlimitedexp:
+    description: Access to the experience dropped by the EnderDragon, without the cooldown.
+    default: op

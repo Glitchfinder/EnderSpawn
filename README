@@ -23,9 +23,10 @@ Commands:
 		- Usage: /<command>
 
 Permissions:
-	- enderspawn.*		- Access to everything related to the EnderSpawn plugin.
-	- enderspawn.ban	- Access to the /enderspawn ban and /enderspawn unban commands.
-	- enderspawn.reload	- Access to the /enderspawn reload command.
-	- enderspawn.lookup	- Access to the /enderspawn lookup command.
-	- enderspawn.status	- Access to the /enderspawn status command.
-	- enderspawn.exp	- Access to the experience dropped by the EnderDragon.
+	- enderspawn.*				- Access to everything related to the EnderSpawn plugin.
+	- enderspawn.ban			- Access to the /enderspawn ban and /enderspawn unban commands.
+	- enderspawn.reload			- Access to the /enderspawn reload command.
+	- enderspawn.lookup			- Access to the /enderspawn lookup command.
+	- enderspawn.status			- Access to the /enderspawn status command.
+	- enderspawn.exp			- Access to the experience dropped by the EnderDragon.
+	- enderspawn.unlimitedexp	- Access to the experience dropped by the EnderDragon, without the cooldown.

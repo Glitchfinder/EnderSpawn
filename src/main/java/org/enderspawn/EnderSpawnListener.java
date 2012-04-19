@@ -183,9 +183,11 @@ public class EnderSpawnListener implements Listener
 			
 			player.giveExp(droppedEXP);
 			
-			plugin.config.players.put(playerName, new Timestamp(new Date().getTime()));
-			plugin.config.save();
+			if(!(plugin.hasPermission(player, "enderspawn.unlimitedexp", false)))
+				plugin.config.players.put(playerName, new Timestamp(new Date().getTime()));
 		}
+		
+		plugin.config.save();
 	}
 	
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
