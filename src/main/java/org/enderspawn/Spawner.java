@@ -57,7 +57,7 @@ public class Spawner implements Runnable
 		
 		if(currentTime.getTime() >= (lastDeath.getTime() + (spawnMinutes * 60000)))
 		{
-			run();
+			taskID = plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, this, 200);
 			return;
 		}
 		
