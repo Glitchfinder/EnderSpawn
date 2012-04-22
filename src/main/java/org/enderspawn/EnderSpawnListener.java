@@ -39,6 +39,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityCreatePortalEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.EventHandler;
@@ -188,6 +189,16 @@ public class EnderSpawnListener implements Listener
 		}
 		
 		plugin.config.save();
+	}
+	
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onPlayerJoin(PlayerChangedWorldEvent event)
+	{
+		if(event.getPlayer().getWorld().getEnvironment() != World.Environment.valueOf("THE_END"))
+			return;
+		
+		plugin.spawner.start();
+		plugin.showStatus(event.getPlayer());
 	}
 	
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
