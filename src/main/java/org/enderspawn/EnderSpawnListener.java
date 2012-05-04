@@ -192,22 +192,9 @@ public class EnderSpawnListener implements Listener
 	}
 	
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onPlayerJoin(PlayerChangedWorldEvent event)
+    public void onPlayerChangedWorld(PlayerChangedWorldEvent event)
 	{
 		if(event.getPlayer().getWorld().getEnvironment() != World.Environment.valueOf("THE_END"))
-			return;
-		
-		plugin.spawner.start();
-		plugin.showStatus(event.getPlayer());
-	}
-	
-	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onPlayerTeleport(PlayerTeleportEvent event)
-	{
-		if(event.getTo().getWorld().getEnvironment() != World.Environment.valueOf("THE_END"))
-			return;
-		
-		if(event.getFrom().getWorld().getEnvironment() == World.Environment.valueOf("THE_END"))
 			return;
 		
 		plugin.spawner.start();
