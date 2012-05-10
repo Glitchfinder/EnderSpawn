@@ -17,9 +17,14 @@
 
 package org.enderspawn;
 
-import java.util.logging.Logger;
-
-import org.bukkit.ChatColor;
+//* IMPORTS: JDK/JRE
+	import java.util.logging.Logger;
+//* IMPORTS: BUKKIT
+	import org.bukkit.ChatColor;
+//* IMPORTS: SPOUT
+	//* NOT NEEDED
+//* IMPORTS: OTHER
+	//* NOT NEEDED
 
 public class Log
 {

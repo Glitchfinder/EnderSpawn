@@ -1,56 +1,58 @@
 /*
-* Copyright (c) 2012 Sean Porter <glitchkey@gmail.com>
-*
-* Permission is hereby granted, free of charge, to any person
-* obtaining a copy of this software and associated documentation
-* files (the "Software"), to deal in the Software without restriction,
-* including without limitation the rights to use, copy, modify, merge,
-* publish, distribute, sublicense, and/or sell copies of the Software,
-* and to permit persons to whom the Software is furnished to do so,
-* subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be
-* included in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+ * Copyright (c) 2012 Sean Porter <glitchkey@gmail.com>
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge,
+ * publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package org.enderspawn;
 
-import java.lang.Math;
-import java.lang.String;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import org.bukkit.block.BlockState;
-import org.bukkit.entity.EnderDragon;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityCreatePortalEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.World;
-import org.bukkit.World.Environment;
+//* IMPORTS: JDK/JRE
+	import java.lang.Math;
+	import java.lang.String;
+	import java.sql.Timestamp;
+	import java.util.ArrayList;
+	import java.util.Date;
+	import java.util.List;
+//* IMPORTS: BUKKIT
+	import org.bukkit.block.BlockState;
+	import org.bukkit.entity.EnderDragon;
+	import org.bukkit.entity.Entity;
+	import org.bukkit.entity.LivingEntity;
+	import org.bukkit.entity.Player;
+	import org.bukkit.event.entity.EntityCreatePortalEvent;
+	import org.bukkit.event.entity.EntityDeathEvent;
+	import org.bukkit.event.entity.EntityExplodeEvent;
+	import org.bukkit.event.player.PlayerChangedWorldEvent;
+	import org.bukkit.event.player.PlayerJoinEvent;
+	import org.bukkit.event.EventHandler;
+	import org.bukkit.event.EventPriority;
+	import org.bukkit.event.Listener;
+	import org.bukkit.inventory.ItemStack;
+	import org.bukkit.Location;
+	import org.bukkit.plugin.PluginManager;
+	import org.bukkit.World;
+	import org.bukkit.World.Environment;
+//* IMPORTS: SPOUT
+	//* NOT NEEDED
+//* IMPORTS: OTHER
+	//* NOT NEEDED
 
 public class EnderSpawnListener implements Listener
 {
@@ -70,7 +72,7 @@ public class EnderSpawnListener implements Listener
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onEntityExplode(EntityExplodeEvent event)
+	public void onEntityExplode(EntityExplodeEvent event)
 	{
 		Entity entity = event.getEntity();
 		
@@ -97,20 +99,27 @@ public class EnderSpawnListener implements Listener
 		for (BlockState block : event.getBlocks())
 		{
 			
-			if((block.getType().getId() == 7 || block.getType().getId() == 119 ||
+			if((	block.getType().getId() == 7 || block.getType().getId() == 119 ||
 				block.getType().getId() == 0 || block.getType().getId() == 50) &&
 				!plugin.config.spawnPortal)
 			{
 				blocks.remove(block);
 			}
-			else if(block.getType().getId() == 122 && !plugin.config.spawnEgg)
+			else if(block.getType().getId() == 122 &&
+				!plugin.config.spawnEgg)
 			{
 				blocks.remove(block);
 			}
-			else if(block.getType().getId() == 122 && plugin.config.spawnEgg &&	!plugin.config.spawnPortal)
+			else if(block.getType().getId() == 122 &&
+				plugin.config.spawnEgg &&
+				!plugin.config.spawnPortal)
 			{
 				blocks.remove(block);
-				entity.getWorld().dropItemNaturally(entity.getLocation(), new ItemStack(block.getType()));
+				
+				Location location = entity.getLocation();
+				ItemStack item = new ItemStack(block.getType());
+				
+				entity.getWorld().dropItemNaturally(location, item);
 			}
 		}
 		
@@ -119,7 +128,8 @@ public class EnderSpawnListener implements Listener
 			event.setCancelled(true);
 			
 			LivingEntity newEntity = (LivingEntity) entity;
-			EntityCreatePortalEvent newEvent = new EntityCreatePortalEvent(newEntity, blocks, event.getPortalType());
+			EntityCreatePortalEvent newEvent = new EntityCreatePortalEvent(newEntity, blocks,
+				event.getPortalType());
 			
 			plugin.getServer().getPluginManager().callEvent(newEvent);
 		}
@@ -127,7 +137,7 @@ public class EnderSpawnListener implements Listener
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onEntityDeath(EntityDeathEvent event)
+	public void onEntityDeath(EntityDeathEvent event)
 	{
 		Entity entity = event.getEntity();
 		
@@ -192,7 +202,7 @@ public class EnderSpawnListener implements Listener
 	}
 	
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onPlayerChangedWorld(PlayerChangedWorldEvent event)
+	public void onPlayerChangedWorld(PlayerChangedWorldEvent event)
 	{
 		if(event.getPlayer().getWorld().getEnvironment() != World.Environment.valueOf("THE_END"))
 			return;
@@ -202,7 +212,7 @@ public class EnderSpawnListener implements Listener
 	}
 	
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onPlayerJoin(PlayerJoinEvent event)
+	public void onPlayerJoin(PlayerJoinEvent event)
 	{
 		if(event.getPlayer().getWorld().getEnvironment() != World.Environment.valueOf("THE_END"))
 			return;
