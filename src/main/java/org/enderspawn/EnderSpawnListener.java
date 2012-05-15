@@ -73,9 +73,12 @@ public class EnderSpawnListener implements Listener
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void onEntityExplode(BlockFromToEvent event)
+	public void onDragonEggTeleport(BlockFromToEvent event)
 	{
 		if (event.getBlock().getType().getId() != 122)
+			return;
+		
+		if(plugin.config.teleportEgg)
 			return;
 		
 		event.setCancelled(true);
