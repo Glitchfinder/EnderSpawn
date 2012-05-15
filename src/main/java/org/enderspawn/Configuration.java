@@ -51,6 +51,7 @@ public class Configuration extends YamlConfiguration
 	public	boolean	destroyBlocks;
 	public	boolean	spawnEgg;
 	public	boolean	spawnPortal;
+	public	boolean teleportEgg;
 	public	long	spawnMinutes;
 	public	long	expResetMinutes;
 	public	long	expMaxDistance;
@@ -69,6 +70,7 @@ public class Configuration extends YamlConfiguration
 		destroyBlocks	= false;
 		spawnEgg	= true;
 		spawnPortal	= false;
+		teleportEgg	= false;
 		spawnMinutes	= 0;
 		expResetMinutes	= 1440;
 		expMaxDistance	= 75;
@@ -96,6 +98,7 @@ public class Configuration extends YamlConfiguration
 		destroyBlocks	= getBoolean("Configuration.DestroyBlocks",	destroyBlocks);
 		spawnEgg	= getBoolean("Configuration.SpawnEgg",		spawnEgg);
 		spawnPortal	= getBoolean("Configuration.SpawnPortal",	spawnPortal);
+		teleportEgg	= getBoolean("Configuration.EggsCanTeleport",	teleportEgg);
 		spawnMinutes	= getLong("Configuration.RespawnMinutes",	spawnMinutes);
 		expResetMinutes	= getLong("Configuration.EXPResetMinutes",	expResetMinutes);
 		expMaxDistance	= getLong("Configuration.EXPMaxDistance",	expMaxDistance);
@@ -153,6 +156,7 @@ public class Configuration extends YamlConfiguration
 		set("Configuration.DestroyBlocks",	destroyBlocks);
 		set("Configuration.SpawnEgg",		spawnEgg);
 		set("Configuration.SpawnPortal",	spawnPortal);
+		set("Configuration.EggsCanTeleport",	teleportEgg);
 		set("Configuration.RespawnMinutes",	spawnMinutes);
 		set("Configuration.EXPResetMinutes",	expResetMinutes);
 		set("Configuration.EXPMaxDistance",	expMaxDistance);

@@ -36,6 +36,7 @@ package org.enderspawn;
 	import org.bukkit.entity.Entity;
 	import org.bukkit.entity.LivingEntity;
 	import org.bukkit.entity.Player;
+	import org.bukkit.event.block.BlockFromToEvent;
 	import org.bukkit.event.entity.EntityCreatePortalEvent;
 	import org.bukkit.event.entity.EntityDeathEvent;
 	import org.bukkit.event.entity.EntityExplodeEvent;
@@ -69,6 +70,16 @@ public class EnderSpawnListener implements Listener
 		
 		manager = plugin.getServer().getPluginManager();
 		manager.registerEvents(this, plugin);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void onEntityExplode(BlockFromToEvent event)
+	{
+		if (event.getBlock().getType().getId() != 122)
+			return;
+		
+		event.setCancelled(true);
+		return;
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
