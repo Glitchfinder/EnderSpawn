@@ -107,7 +107,8 @@ public class EnderSpawnCommand implements CommandExecutor
 			plugin.log.info(message + args[1] + " " + reason);
 		}
 
-		plugin.config.bannedPlayers.put(args[1], reason);
+		String player = args[1].toUpperCase().toLowerCase();
+		plugin.config.bannedPlayers.put(player, reason);
 
 		String message = "Banned " + args[1];
 		message += " from receiving Ender Dragon experience: " + reason;
@@ -131,7 +132,8 @@ public class EnderSpawnCommand implements CommandExecutor
 			plugin.log.info(message + args[1]);
 		}
 
-		plugin.config.bannedPlayers.remove(args[1]);
+		String player = args[1].toUpperCase().toLowerCase();
+		plugin.config.bannedPlayers.remove(player);
 
 		String message = "Allowed " + args[1] + " to receive Ender Dragon experience.";
 		Message.info(sender, message);
@@ -153,7 +155,8 @@ public class EnderSpawnCommand implements CommandExecutor
 			plugin.log.info(message + args[1]);
 		}
 
-		String reason = plugin.config.bannedPlayers.get(args[1]);
+		String player = args[1].toUpperCase().toLowerCase();
+		String reason = plugin.config.bannedPlayers.get(player);
 
 		if(reason == null)
 		{
@@ -198,7 +201,7 @@ public class EnderSpawnCommand implements CommandExecutor
 
 		if(sender instanceof Player)
 		{
-			String message = ((Player)sender).getName() + ": /enderspawn status";
+			String message = ((Player)sender).getName() + ": /enderspawn status ";
 			plugin.log.info(message + args[1]);
 		}
 
@@ -219,7 +222,8 @@ public class EnderSpawnCommand implements CommandExecutor
 			plugin.log.info(message + args[1]);
 		}
 
-		plugin.config.players.remove(args[1]);
+		String player = args[1].toUpperCase().toLowerCase();
+		plugin.config.players.remove(player);
 
 		String message = "Allowed " + args[1] + " to receive Ender Dragon experience.";
 		Message.info(sender, message);

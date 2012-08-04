@@ -187,7 +187,7 @@ public class EnderSpawnListener implements Listener
 			if(distance > plugin.config.expMaxDistance)
 				continue;
 
-			String playerName = player.getName();
+			String playerName = player.getName().toUpperCase().toLowerCase();
 
 			if(plugin.config.bannedPlayers.containsKey(playerName))
 				continue;

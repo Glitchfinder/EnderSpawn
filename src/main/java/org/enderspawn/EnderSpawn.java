@@ -202,11 +202,12 @@ public class EnderSpawn extends JavaPlugin
 	public boolean showStatus(Player player, String name)
 	{
 		String playerName = (name == null) ? player.getName() : name;
+		String caselessPlayerName = playerName.toUpperCase().toLowerCase();
 
 		long time = 0;
 
-		if(config.players.get(playerName) != null)
-			time = config.players.get(playerName).getTime();
+		if(config.players.get(caselessPlayerName) != null)
+			time = config.players.get(caselessPlayerName).getTime();
 
 		return status(player, time, name);
 	}

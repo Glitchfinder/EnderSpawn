@@ -117,6 +117,8 @@ public class Configuration extends YamlConfiguration
 			if((player == null) || (timeString == null))
 				continue;
 
+			player = player.toUpperCase().toLowerCase();
+
 			try
 			{
 				time = Timestamp.valueOf(timeString);
@@ -139,6 +141,8 @@ public class Configuration extends YamlConfiguration
 			
 			if((player == null) || (banReason == null))
 				continue;
+
+			player = player.toUpperCase().toLowerCase();
 
 			bannedPlayers.put(player, banReason);
 		}
