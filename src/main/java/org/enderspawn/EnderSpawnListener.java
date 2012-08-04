@@ -48,6 +48,7 @@ package org.enderspawn;
 	import org.bukkit.inventory.ItemStack;
 	import org.bukkit.Location;
 	import org.bukkit.plugin.PluginManager;
+	import org.bukkit.PortalType;
 	import org.bukkit.World;
 	import org.bukkit.World.Environment;
 //* IMPORTS: SPOUT
@@ -58,180 +59,186 @@ package org.enderspawn;
 public class EnderSpawnListener implements Listener
 {
 	private EnderSpawn plugin;
-	
+
 	public EnderSpawnListener(EnderSpawn plugin)
 	{
 		this.plugin = plugin;
 	}
-	
+
 	public void register()
 	{
 		PluginManager manager;
-		
+
 		manager = plugin.getServer().getPluginManager();
 		manager.registerEvents(this, plugin);
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onDragonEggTeleport(BlockFromToEvent event)
 	{
 		if (event.getBlock().getType().getId() != 122)
 			return;
-		
+
 		if(plugin.config.teleportEgg)
 			return;
-		
+
 		event.setCancelled(true);
 		return;
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onEntityExplode(EntityExplodeEvent event)
 	{
-		Entity entity = event.getEntity();
-		
-		if (!(entity instanceof EnderDragon))
+		if (!(event.getEntity() instanceof EnderDragon))
 			return;
-		
+
 		if (plugin.config.destroyBlocks)
 			return;
-		
+
 		event.blockList().clear();
 		return;
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onEntityCreatePortal(EntityCreatePortalEvent event)
 	{
 		Entity entity = event.getEntity();
-		
+
 		if (!(entity instanceof EnderDragon))
 			return;
-		
+
 		List<BlockState> blocks = new ArrayList(event.getBlocks());
-		
+
 		for (BlockState block : event.getBlocks())
 		{
-			
-			if((	block.getType().getId() == 7 || block.getType().getId() == 119 ||
-				block.getType().getId() == 0 || block.getType().getId() == 50) &&
-				!plugin.config.spawnPortal)
+			if(block.getType().getId() == 122 && !plugin.config.spawnEgg)
+				blocks.remove(block);
+
+			if(plugin.config.spawnPortal)
+				continue;
+
+			if(block.getType().getId() == 7 || block.getType().getId() == 119)
+				blocks.remove(block);
+			else if(block.getType().getId() == 0 || block.getType().getId() == 50)
+				blocks.remove(block);
+			else if(block.getType().getId() == 122 && plugin.config.spawnEgg)
 			{
 				blocks.remove(block);
-			}
-			else if(block.getType().getId() == 122 &&
-				!plugin.config.spawnEgg)
-			{
-				blocks.remove(block);
-			}
-			else if(block.getType().getId() == 122 &&
-				plugin.config.spawnEgg &&
-				!plugin.config.spawnPortal)
-			{
-				blocks.remove(block);
-				
+
 				Location location = entity.getLocation();
 				ItemStack item = new ItemStack(block.getType());
-				
+
 				entity.getWorld().dropItemNaturally(location, item);
 			}
 		}
-		
+
 		if(blocks.size() != event.getBlocks().size())
 		{
 			event.setCancelled(true);
-			
+
 			LivingEntity newEntity = (LivingEntity) entity;
-			EntityCreatePortalEvent newEvent = new EntityCreatePortalEvent(newEntity, blocks,
-				event.getPortalType());
-			
+			PortalType type = event.getPortalType();
+			EntityCreatePortalEvent newEvent;
+			newEvent = new EntityCreatePortalEvent(newEntity, blocks, type);
+
 			plugin.getServer().getPluginManager().callEvent(newEvent);
 		}
 		return;
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onEntityDeath(EntityDeathEvent event)
 	{
 		Entity entity = event.getEntity();
-		
+
 		if (!(entity instanceof EnderDragon))
 			return;
-		
+
 		plugin.config.lastDeath = new Timestamp(new Date().getTime());
 		plugin.config.save();
 		plugin.spawner.start();
-		
+
 		int droppedEXP = event.getDroppedExp();		
 		event.setDroppedExp(0);
-		
+
 		World world = entity.getWorld();
 		List<Player> players = world.getPlayers();
-		
+
 		Location enderDragonLocation = entity.getLocation();
-		
+
 		double enderX = enderDragonLocation.getX();
 		double enderY = enderDragonLocation.getY();
 		double enderZ = enderDragonLocation.getZ();
-		
+
 		for(Player player : players)
 		{
 			Location playerLocation = player.getLocation();
-			
+
 			double playerX = playerLocation.getX();
 			double playerY = playerLocation.getY();
 			double playerZ = playerLocation.getZ();
-			
+
 			double squareX = Math.pow((enderX - playerX), 2);
 			double squareY = Math.pow((enderY - playerY), 2);
 			double squareZ = Math.pow((enderZ - playerZ), 2);
-			
+
 			double distance = Math.sqrt(squareX + squareY + squareZ);
-			
+
 			if(distance > plugin.config.expMaxDistance)
 				continue;
-			
+
 			String playerName = player.getName();
-			
+
 			if(plugin.config.bannedPlayers.containsKey(playerName))
 				continue;
-			
+
 			Timestamp time = plugin.config.players.get(playerName);
-			
-			long requiredTime = ((new Date().getTime()) - (plugin.config.expResetMinutes * 60000));
-			
+
+			long requiredTime = new Date().getTime();
+			requiredTime -= plugin.config.expResetMinutes * 60000;
+
 			if(time != null && (time.getTime() > requiredTime))
 				continue;
-			
+
 			if(!(plugin.hasPermission(player, "enderspawn.exp", false)))
 				continue;
-			
+
 			player.giveExp(droppedEXP);
-			
-			if(!(plugin.hasPermission(player, "enderspawn.unlimitedexp", false)) && droppedEXP > 0)
-				plugin.config.players.put(playerName, new Timestamp(new Date().getTime()));
+
+			if(plugin.hasPermission(player, "enderspawn.unlimitedexp", false))
+				continue;
+
+			if(droppedEXP > 0)
+			{
+				Timestamp now = new Timestamp(new Date().getTime());
+				plugin.config.players.put(playerName, now);
+			}
 		}
-		
+
 		plugin.config.save();
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onPlayerChangedWorld(PlayerChangedWorldEvent event)
 	{
-		if(event.getPlayer().getWorld().getEnvironment() != World.Environment.valueOf("THE_END"))
+		Environment environment = event.getPlayer().getWorld().getEnvironment();
+
+		if(environment != World.Environment.valueOf("THE_END"))
 			return;
-		
+
 		plugin.spawner.start();
-		plugin.showStatus(event.getPlayer());
+		plugin.showStatus(event.getPlayer(), null);
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
-		if(event.getPlayer().getWorld().getEnvironment() != World.Environment.valueOf("THE_END"))
+		Environment environment = event.getPlayer().getWorld().getEnvironment();
+
+		if(environment != World.Environment.valueOf("THE_END"))
 			return;
-		
+
 		plugin.spawner.start();
-		plugin.showStatus(event.getPlayer());
+		plugin.showStatus(event.getPlayer(), null);
 	}
 }

@@ -38,65 +38,61 @@ package org.enderspawn;
 public class EnderSpawnCommand implements CommandExecutor
 {
 	private EnderSpawn plugin;
-	
+
 	public EnderSpawnCommand(EnderSpawn plugin)
 	{
 		this.plugin = plugin;
 	}
-	
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
+
+	public boolean onCommand(
+		CommandSender sender,
+		Command command,
+		String label,
+		String[] args)
 	{
 		if(args.length < 1)
 			return false;
-		
+
 		if(args[0].equalsIgnoreCase("reload"))
-		{
 			return reload(sender);
-		}
 		else if(args[0].equalsIgnoreCase("ban"))
-		{
 			return ban(sender, args);
-		}
 		else if(args[0].equalsIgnoreCase("unban"))
-		{
 			return unban(sender, args);
-		}
 		else if(args[0].equalsIgnoreCase("lookup"))
-		{
 			return lookup(sender, args);
-		}
 		else if(args[0].equalsIgnoreCase("status"))
-		{
-			return status(sender);
-		}
-		
+			return status(sender, args);
+		else if(args[0].equalsIgnoreCase("reset"))
+			return reset(sender, args);
+
 		return false;
 	}
-	
+
 	private boolean reload(CommandSender sender)
 	{
 		if(!(plugin.hasPermission(sender, "enderspawn.reload")))
 			return true;
-		
+
 		if(sender instanceof Player)
-			Log.info(((Player)sender).getName() + ": /enderspawn reload");
-		
+			plugin.log.info(((Player)sender).getName() + ": /enderspawn reload");
+
 		plugin.reload();
 		Message.info(sender, "EnderSpawn was successfully reloaded.");
-		
+
 		return true;
 	}
-	
+
 	private boolean ban(CommandSender sender, String[] args)
 	{
 		if(!(plugin.hasPermission(sender, "enderspawn.ban")))
 			return true;
-		
+
 		if(args.length < 3)
 			return false;
-		
+
 		String reason = args[2];
-		
+
 		if(args.length > 3)
 		{
 			for(int i = 3; i < args.length; i++)
@@ -104,67 +100,130 @@ public class EnderSpawnCommand implements CommandExecutor
 				reason = reason + " " + args[i];
 			}
 		}
-		
+
 		if(sender instanceof Player)
-			Log.info(((Player)sender).getName() + ": /enderspawn ban " + args[1] + " " + reason);
-		
+		{
+			String message = ((Player)sender).getName() + ": /enderspawn ban ";
+			plugin.log.info(message + args[1] + " " + reason);
+		}
+
 		plugin.config.bannedPlayers.put(args[1], reason);
-		Message.info(sender, "Banned " + args[1] + " from receiving Ender Dragon experience: " + reason);
-		
+
+		String message = "Banned " + args[1];
+		message += " from receiving Ender Dragon experience: " + reason;
+
+		Message.info(sender, message);
+
 		return true;
 	}
-	
+
 	private boolean unban(CommandSender sender, String[] args)
 	{
 		if(!(plugin.hasPermission(sender, "enderspawn.ban")))
 			return true;
-		
+
 		if(args.length < 2)
 			return false;
-		
+
 		if(sender instanceof Player)
-			Log.info(((Player)sender).getName() + ": /enderspawn unban " + args[1]);
-		
+		{
+			String message = ((Player)sender).getName() + ": /enderspawn unban ";
+			plugin.log.info(message + args[1]);
+		}
+
 		plugin.config.bannedPlayers.remove(args[1]);
-		Message.info(sender, "Allowed " + args[1] + " to receive Ender Dragon experience.");
-		
+
+		String message = "Allowed " + args[1] + " to receive Ender Dragon experience.";
+		Message.info(sender, message);
+
 		return true;
 	}
-	
+
 	private boolean lookup(CommandSender sender, String[] args)
 	{
 		if(!(plugin.hasPermission(sender, "enderspawn.lookup")))
 			return true;
-		
+
 		if(args.length < 2)
 			return false;
-		
+
 		if(sender instanceof Player)
-			Log.info(((Player)sender).getName() + ": /enderspawn lookup " + args[1]);
-		
+		{
+			String message = ((Player)sender).getName() + ": /enderspawn lookup ";
+			plugin.log.info(message + args[1]);
+		}
+
 		String reason = plugin.config.bannedPlayers.get(args[1]);
-		
+
 		if(reason == null)
 		{
-			Message.info(sender, args[1] + " is not banned from receiving Ender Dragon experience.");
+			String message = args[1];
+			message += " is not banned from receiving Ender Dragon experience.";
+			Message.info(sender, message);
 			return true;
 		}
-		
+
 		Message.info(sender, args[1] + " is banned for: " + reason);
 		return true;
 	}
-	
-	private boolean status(CommandSender sender)
+
+	private boolean status(CommandSender sender, String[] args)
 	{
+		if(args.length >= 2)
+			return statusOther(sender, args);
+
 		if(!(plugin.hasPermission(sender, "enderspawn.status")))
 			return true;
-		
+
 		if(!(plugin.hasPermission(sender, "enderspawn.exp", false)))
-			Message.info(sender, "You are not allowed to receive Ender Dragon experience.");
-		
+		{
+			String message = "You are not allowed to receive ";
+			message += "Ender Dragon experience.";
+			Message.info(sender, message);
+		}
+
 		if(sender instanceof Player)
-			Log.info(((Player)sender).getName() + ": /enderspawn status");
-		
-		return plugin.showStatus((Player) sender);
+			plugin.log.info(((Player)sender).getName() + ": /enderspawn status");
+
+		return plugin.showStatus((Player) sender, null);
+	}
+
+	private boolean statusOther(CommandSender sender, String[] args)
+	{
+		if(args.length < 2)
+			return false;
+
+		if(!(plugin.hasPermission(sender, "enderspawn.status.other")))
+			return true;
+
+		if(sender instanceof Player)
+		{
+			String message = ((Player)sender).getName() + ": /enderspawn status";
+			plugin.log.info(message + args[1]);
+		}
+
+		return plugin.showStatus((Player) sender, args[1]);
+	}
+
+	private boolean reset(CommandSender sender, String[] args)
+	{
+		if(!(plugin.hasPermission(sender, "enderspawn.reset")))
+			return true;
+
+		if(args.length < 2)
+			return false;
+
+		if(sender instanceof Player)
+		{
+			String message = ((Player)sender).getName() + ": /enderspawn reset ";
+			plugin.log.info(message + args[1]);
+		}
+
+		plugin.config.players.remove(args[1]);
+
+		String message = "Allowed " + args[1] + " to receive Ender Dragon experience.";
+		Message.info(sender, message);
+
+		return true;
 	}
 }

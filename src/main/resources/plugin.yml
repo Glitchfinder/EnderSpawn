@@ -10,7 +10,14 @@ commands:
   enderspawn:
     description: Enderspawn command.
     aliases: ['es']
-    usage: /<command> [reload|ban [playername] [reason]| unban [playername]| lookup [playername]| status]
+    usage: >
+      /<command>
+      [reload
+      | ban [playername] [reason]
+      | unban [playername]
+      | lookup [playername]
+      | status <playername>
+      | reset [playername]]
 
 permissions:
   enderspawn.*:
@@ -20,8 +27,10 @@ permissions:
       enderspawn.reload: true
       enderspawn.lookup: true
       enderspawn.status: true
+      enderspawn.status.other: true
       enderspawn.exp: true
       enderspawn.unlimitedexp: true
+      enderspawn.reset: true
   enderspawn.ban:
     description: Access to the /enderspawn ban and /enderspawn unban commands.
     default: op
@@ -34,9 +43,15 @@ permissions:
   enderspawn.status:
     description: Access to the /enderspawn status command.
     default: true
+  enderspawn.status.other:
+    description: Access to the /enderspawn status <playername> command.
+    default: op
   enderspawn.exp:
     description: Access to the experience dropped by the EnderDragon.
     default: true
   enderspawn.unlimitedexp:
     description: Access to the experience dropped by the EnderDragon, without the cooldown.
+    default: op
+  enderspawn.reset:
+    description: Access to the /enderspawn reset command.
     default: op

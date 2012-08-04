@@ -26,12 +26,14 @@ package org.enderspawn;
 //* IMPORTS: JDK/JRE
 	import java.lang.Runnable;
 	import java.sql.Timestamp;
+	import java.util.ArrayList;
 	import java.util.Date;
 	import java.util.List;
 //* IMPORTS: BUKKIT
 	import org.bukkit.entity.EnderDragon;
 	import org.bukkit.entity.EntityType;
 	import org.bukkit.Location;
+	import org.bukkit.scheduler.BukkitScheduler;
 	import org.bukkit.World;
 	import org.bukkit.World.Environment;
 //* IMPORTS: SPOUT
@@ -43,60 +45,64 @@ public class Spawner implements Runnable
 {
 	private EnderSpawn plugin;
 	private int taskID;
-	
+
 	public Spawner(EnderSpawn plugin)
 	{
 		this.plugin = plugin;
 		taskID = -1;
 	}
-	
+
 	public void start()
 	{
 		if(taskID >= 0)
 			return;
-		
+
 		Timestamp currentTime 	= new Timestamp(new Date().getTime());
 		Timestamp lastDeath	= this.plugin.config.lastDeath;
-		
+
 		long spawnMinutes	= this.plugin.config.spawnMinutes;
-		
+
+		BukkitScheduler scheduler = plugin.getServer().getScheduler();
 		if(currentTime.getTime() >= (lastDeath.getTime() + (spawnMinutes * 60000)))
 		{
-			taskID = plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, this, 200);
+			taskID = scheduler.scheduleSyncDelayedTask(plugin, this, 200);
 			return;
 		}
-		
-		long timeRemaining = ((lastDeath.getTime() + (spawnMinutes * 60000)) - currentTime.getTime());
+
+		long timeRemaining = (lastDeath.getTime() + (spawnMinutes * 60000));
+		timeRemaining -=  currentTime.getTime();
 		long ticksRemaining = (timeRemaining / 50);
-		
-		taskID = plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, this, ticksRemaining);
+
+		taskID = scheduler.scheduleSyncDelayedTask(plugin, this, ticksRemaining);
 	}
-	
+
 	public void stop()
 	{
 		if(taskID < 0)
 			return;
-		
+
 		plugin.getServer().getScheduler().cancelTask(taskID);
 		taskID = -1;
 	}
-	
+
 	public void run()
 	{
 		List<World> worlds = plugin.getServer().getWorlds();
-		
+
 		for (World world : worlds)
 		{
 			if(world.getEnvironment() != World.Environment.valueOf("THE_END"))
 				continue;
 			
-			if(world.getEntitiesByClass(EnderDragon.class).size() >= plugin.config.maxDragons)
+			List dragons = new ArrayList(world.getEntitiesByClass(EnderDragon.class));
+
+			if(dragons.size() >= plugin.config.maxDragons)
 				continue;
-			
+
 			Location location = new Location(world, 0, 128, 0);
 			world.spawnCreature(location, EntityType.ENDER_DRAGON);
 		}
-		
+
 		stop();
 	}
 }

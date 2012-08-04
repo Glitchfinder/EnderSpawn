@@ -30,75 +30,75 @@ package org.enderspawn;
 
 public class Message
 {
-    /**
-     * Send an INFO message to a CommandSender.  This method is the
-     * same as calling Message.toSender() but, let's keep the INFO,
-     * WARNING, SEVERE standard.
-     * 
-     * @param sender  the CommandSender
-     * @param format  A format string
-     * @param args    Arguments corresponding to @param format
-     **/
-    public static void info(CommandSender sender, String format, Object ... args)
-    {
-        toSender(sender, format, args);
-    }
-    
-    /**
-     * Send an WARNING message to a CommandSender.  If the CommandSender
-     * is a player, the message is highlighted yellow.  If the
-     * CommandSender is not a Player, this is same as Message.toSender()
-     * 
-     * @param sender  the CommandSender
-     * @param format  A format string
-     * @param args    Arguments corresponding to @param format
-     **/
-    public static void warning(CommandSender sender, String format, Object ... args)
-    {
-        if(sender instanceof Player)
-            format = ChatColor.YELLOW + format;
-        
-        toSender(sender, format, args);
-    }
-    
-    /**
-     * Send a SEVERE message to a CommandSender.  If the CommandSender
-     * is a player, the message is highlighted in red.  If the
-     * CommandSender is not a Player, this is same as Message.toSender()
-     * 
-     * @param sender  the CommandSender
-     * @param format  A format string
-     * @param args    Arguments corresponding to @param format
-     **/
-    public static void severe(CommandSender sender, String format, Object ... args)
-    {
-        if(sender instanceof Player)
-            format = ChatColor.RED + format;
-        
-        toSender(sender, format, args);
-    }
-    
-    /**
-     * Send a message to a CommandSender with the plugin name prefixed.
-     * If the CommandSender is not a Player, any ChatColors in the
-     * message will be stripped.
-     * 
-     * @param sende:  the CommandSender
-     * @param format  A format string
-     * @param args    Arguments corresponding to @param format
-     **/
-    public static void toSender(CommandSender sender, String format, Object ... args)
-    {
-        String msg = String.format(format, args);
-        
-        if(sender instanceof Player) {
-            msg = String.format("%s[%s]%s %s", ChatColor.DARK_AQUA,
-                EnderSpawn.pluginName, ChatColor.WHITE, msg);
-        } else {
-            msg = String.format("[%s] %s ", EnderSpawn.pluginName, msg);
-            msg = ChatColor.stripColor(msg);
-        }
-        
-        sender.sendMessage(msg);
-    }
+	/**
+	 * Send an INFO message to a CommandSender.  This method is the
+	 * same as calling Message.toSender() but, let's keep the INFO,
+	 * WARNING, SEVERE standard.
+	 * 
+	 * @param sender  the CommandSender
+	 * @param format  A format string
+	 * @param args    Arguments corresponding to @param format
+	 **/
+	public static void info(CommandSender sender, String format, Object ... args)
+	{
+		toSender(sender, format, args);
+	}
+
+	/**
+	 * Send an WARNING message to a CommandSender.  If the CommandSender
+	 * is a player, the message is highlighted yellow.  If the
+	 * CommandSender is not a Player, this is same as Message.toSender()
+	 * 
+	 * @param sender  the CommandSender
+	 * @param format  A format string
+	 * @param args    Arguments corresponding to @param format
+	 **/
+	public static void warning(CommandSender sender, String format, Object ... args)
+	{
+		if(sender instanceof Player)
+			format = ChatColor.YELLOW + format;
+
+		toSender(sender, format, args);
+	}
+
+	/**
+	 * Send a SEVERE message to a CommandSender.  If the CommandSender
+	 * is a player, the message is highlighted in red.  If the
+	 * CommandSender is not a Player, this is same as Message.toSender()
+	 * 
+	 * @param sender  the CommandSender
+	 * @param format  A format string
+	 * @param args    Arguments corresponding to @param format
+	 **/
+	public static void severe(CommandSender sender, String format, Object ... args)
+	{
+		if(sender instanceof Player)
+			format = ChatColor.RED + format;
+
+		toSender(sender, format, args);
+	}
+
+	/**
+	 * Send a message to a CommandSender with the plugin name prefixed.
+	 * If the CommandSender is not a Player, any ChatColors in the
+	 * message will be stripped.
+	 * 
+	 * @param sende:  the CommandSender
+	 * @param format  A format string
+	 * @param args    Arguments corresponding to @param format
+	 **/
+	public static void toSender(CommandSender sender, String format, Object ... args)
+	{
+		String msg = String.format(format, args);
+
+		if(sender instanceof Player) {
+			msg = String.format("%s[%s]%s %s", ChatColor.DARK_AQUA,
+			EnderSpawn.pluginName, ChatColor.WHITE, msg);
+		} else {
+			msg = String.format("[%s] %s ", EnderSpawn.pluginName, msg);
+			msg = ChatColor.stripColor(msg);
+		}
+
+		sender.sendMessage(msg);
+	}
 }
