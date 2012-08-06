@@ -109,6 +109,7 @@ public class EnderSpawnCommand implements CommandExecutor
 
 		String player = args[1].toUpperCase().toLowerCase();
 		plugin.config.bannedPlayers.put(player, reason);
+		plugin.config.save();
 
 		String message = "Banned " + args[1];
 		message += " from receiving Ender Dragon experience: " + reason;
@@ -134,6 +135,7 @@ public class EnderSpawnCommand implements CommandExecutor
 
 		String player = args[1].toUpperCase().toLowerCase();
 		plugin.config.bannedPlayers.remove(player);
+		plugin.config.save();
 
 		String message = "Allowed " + args[1] + " to receive Ender Dragon experience.";
 		Message.info(sender, message);
@@ -224,6 +226,7 @@ public class EnderSpawnCommand implements CommandExecutor
 
 		String player = args[1].toUpperCase().toLowerCase();
 		plugin.config.players.remove(player);
+		plugin.config.save();
 
 		String message = "Allowed " + args[1] + " to receive Ender Dragon experience.";
 		Message.info(sender, message);

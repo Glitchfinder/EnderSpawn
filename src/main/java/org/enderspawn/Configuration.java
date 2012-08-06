@@ -25,22 +25,21 @@ package org.enderspawn;
 
 //* IMPORTS: JDK/JRE
 	import java.io.File;
+	import java.lang.Integer;
+	import java.lang.Long;
 	import java.lang.String;
 	import java.sql.Timestamp;
-	import java.util.ArrayList;
 	import java.util.Date;
 	import java.util.HashMap;
 	import java.util.logging.Logger;
 	import java.util.Map;
-	import java.util.Map.Entry;
 //* IMPORTS: BUKKIT
-	//* NOT NEEDED
+	import org.bukkit.configuration.ConfigurationSection;
+	import org.bukkit.configuration.file.YamlConfiguration;
 //* IMPORTS: SPOUT
 	//* NOT NEEDED
 //* IMPORTS: OTHER
 	//* NOT NEEDED
-
-import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Configuration extends YamlConfiguration
 {
@@ -49,6 +48,7 @@ public class Configuration extends YamlConfiguration
 
 	public	HashMap<String,	Timestamp>	players;
 	public	HashMap<String,	String>		bannedPlayers;
+	public	HashMap<String,	Integer>	dragonCounts;
 
 	public	boolean	destroyBlocks;
 	public	boolean	spawnEgg;
@@ -68,6 +68,7 @@ public class Configuration extends YamlConfiguration
 
 		players		= new HashMap<String, Timestamp>();
 		bannedPlayers	= new HashMap<String, String>();
+		dragonCounts	= new HashMap<String, Integer>();
 
 		destroyBlocks	= false;
 		spawnEgg	= true;
@@ -83,11 +84,6 @@ public class Configuration extends YamlConfiguration
 
 	public void load()
 	{
-		String		player,	banReason, timeString;
-		long		deathLong;
-		Timestamp	time;
-		Timestamp	currentTime = new Timestamp(new Date().getTime());
-
 		try
 		{
 			super.load(config);
@@ -105,60 +101,16 @@ public class Configuration extends YamlConfiguration
 		expResetMinutes	= getLong("Configuration.EXPResetMinutes",	expResetMinutes);
 		expMaxDistance	= getLong("Configuration.EXPMaxDistance",	expMaxDistance);
 		maxDragons	= getInt("Configuration.MaxDragons",		maxDragons);
+		lastDeath	= new Timestamp(getLong("LastDeath",		0));
 
-		deathLong	= getLong("LastDeath",	0);
-		lastDeath	= new Timestamp(deathLong);
-
-		for(Map<?, ?> map : getMapList("Players"))
-		{
-			player		= (String) map.get("Player");
-			timeString	= (String) map.get("Time");
-
-			if((player == null) || (timeString == null))
-				continue;
-
-			player = player.toUpperCase().toLowerCase();
-
-			try
-			{
-				time = Timestamp.valueOf(timeString);
-			}
-			catch(Exception e)
-			{
-				continue;
-			}
-
-			if(currentTime.getTime() >= (time.getTime() + (expResetMinutes * 60000)))
-				continue;
-
-			players.put(player, time);
-		}
-
-		for(Map<?, ?> map : getMapList("BannedPlayers"))
-		{
-			player		= (String) map.get("Player");
-			banReason	= (String) map.get("BanReason");
-			
-			if((player == null) || (banReason == null))
-				continue;
-
-			player = player.toUpperCase().toLowerCase();
-
-			bannedPlayers.put(player, banReason);
-		}
-
-		if(!config.exists())
-			save();
+		getPlayers();
+		getBannedPlayers();
+		getDragons();
+		save();
 	}
 
 	public void save()
 	{
-		ArrayList<Map<String, String>>	currentPlayers;
-		ArrayList<Map<String, String>>	currentBannedPlayers;
-
-		Map<String, String> currentPlayer;
-		Map<String, String> currentBannedPlayer;
-
 		set("Configuration.DestroyBlocks",	destroyBlocks);
 		set("Configuration.SpawnEgg",		spawnEgg);
 		set("Configuration.SpawnPortal",	spawnPortal);
@@ -167,36 +119,11 @@ public class Configuration extends YamlConfiguration
 		set("Configuration.EXPResetMinutes",	expResetMinutes);
 		set("Configuration.EXPMaxDistance",	expMaxDistance);
 		set("Configuration.MaxDragons",		maxDragons);
-
-		currentPlayers = new ArrayList<Map<String, String>>();
-
 		set("LastDeath", lastDeath.getTime());
 
-		for(Entry<String, Timestamp> entry : players.entrySet())
-		{
-			currentPlayer = new HashMap<String, String>();
-			
-			currentPlayer.put("Player",	entry.getKey());
-			currentPlayer.put("Time",	entry.getValue().toString());
-
-			currentPlayers.add(currentPlayer);
-		}
-
-		set("Players", currentPlayers);
-
-		currentBannedPlayers = new ArrayList<Map<String, String>>();
-
-		for(Entry<String, String> entry : bannedPlayers.entrySet())
-		{
-			currentBannedPlayer = new HashMap<String, String>();
-
-			currentBannedPlayer.put("Player",	entry.getKey());
-			currentBannedPlayer.put("BanReason",	entry.getValue());
-
-			currentBannedPlayers.add(currentBannedPlayer);
-		}
-
-		set("BannedPlayers", currentBannedPlayers);
+		createSection("Players", players);
+		createSection("BannedPlayers", bannedPlayers);
+		createSection("DragonCounts", dragonCounts);
 
 		try
 		{
@@ -205,6 +132,96 @@ public class Configuration extends YamlConfiguration
 		catch(Exception e)
 		{
 			log.warning("Unable to save configuration.");
+		}
+	}
+
+	public void getPlayers()
+	{
+		Timestamp currentTime = new Timestamp(new Date().getTime());
+		ConfigurationSection playerSection = getConfigurationSection("Players");
+		Map<String, Object> playerValues = playerSection.getValues(false);
+
+		if(playerValues.isEmpty())
+			return;
+
+		for(Object key : playerValues.keySet())
+		{
+			if(!(key instanceof String))
+				continue;
+
+			String player = (String) key;
+			if(!playerValues.containsKey(player))
+				continue;
+
+			Object tempLong = playerValues.get(player);
+			if(!(tempLong instanceof Long))
+				continue;
+
+			Timestamp time = new Timestamp((Long) tempLong);
+			player = player.toUpperCase().toLowerCase();
+
+			if(currentTime.getTime() >= (time.getTime() + (expResetMinutes * 60000)))
+				continue;
+
+			players.put(player, time);
+		}
+	}
+
+	public void getBannedPlayers()
+	{
+		String name = "BannedPlayers";
+		ConfigurationSection playerSection = getConfigurationSection(name);
+		Map<String, Object> playerValues = playerSection.getValues(false);
+
+		if(playerValues.isEmpty())
+			return;
+
+		for(Object key : playerValues.keySet())
+		{
+			if(!(key instanceof String))
+				continue;
+
+			String player = (String) key;
+			if(!playerValues.containsKey(player))
+				continue;
+
+			Object tempString = playerValues.get(player);
+			if(!(tempString instanceof String))
+				continue;
+
+			String banReason = (String) tempString;
+			player = player.toUpperCase().toLowerCase();
+
+			bannedPlayers.put(player, banReason);
+		}
+	}
+
+	public void getDragons()
+	{
+		String name = "DragonCounts";
+		ConfigurationSection dragonSection = getConfigurationSection(name);
+		Map<String, Object> dragonValues = dragonSection.getValues(false);
+
+		if(dragonValues.isEmpty())
+			return;
+
+		for(Object key : dragonValues.keySet())
+		{
+			if(!(key instanceof String))
+				continue;
+
+			String world = (String) key;
+			if(!dragonValues.containsKey(world))
+				continue;
+
+			Object tempInt = dragonValues.get(world);
+			if(!(tempInt instanceof Integer))
+				continue;
+
+			int count = (Integer) tempInt;
+			world = world.toUpperCase().toLowerCase();
+
+			dragonCounts.put(world, count);
 		}
 	}
 }

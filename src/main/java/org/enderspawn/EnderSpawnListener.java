@@ -37,6 +37,7 @@ package org.enderspawn;
 	import org.bukkit.entity.LivingEntity;
 	import org.bukkit.entity.Player;
 	import org.bukkit.event.block.BlockFromToEvent;
+	import org.bukkit.event.entity.CreatureSpawnEvent;
 	import org.bukkit.event.entity.EntityCreatePortalEvent;
 	import org.bukkit.event.entity.EntityDeathEvent;
 	import org.bukkit.event.entity.EntityExplodeEvent;
@@ -71,6 +72,24 @@ public class EnderSpawnListener implements Listener
 
 		manager = plugin.getServer().getPluginManager();
 		manager.registerEvents(this, plugin);
+	}
+
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void onCreatureSpawn(CreatureSpawnEvent event)
+	{
+		if (!(event.getEntity() instanceof EnderDragon))
+			return;
+
+		String worldName = event.getEntity().getWorld().getName();
+		worldName = worldName.toUpperCase().toLowerCase();
+
+		if(!plugin.config.dragonCounts.containsKey(worldName))
+			plugin.config.dragonCounts.put(worldName, 0);
+
+		int count = plugin.config.dragonCounts.get(worldName);
+		count += 1;
+		plugin.config.dragonCounts.put(worldName, count);
+		plugin.config.save();
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -162,6 +181,18 @@ public class EnderSpawnListener implements Listener
 		event.setDroppedExp(0);
 
 		World world = entity.getWorld();
+		String worldName = world.getName().toUpperCase().toLowerCase();
+
+		if(!plugin.config.dragonCounts.containsKey(worldName))
+			plugin.config.dragonCounts.put(worldName, 0);
+
+		int count = plugin.config.dragonCounts.get(worldName);
+		if(count > 0)
+		{
+			count -= 1;
+			plugin.config.dragonCounts.put(worldName, count);
+		}
+
 		List<Player> players = world.getPlayers();
 
 		Location enderDragonLocation = entity.getLocation();

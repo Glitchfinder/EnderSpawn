@@ -25,6 +25,7 @@ package org.enderspawn;
 
 //* IMPORTS: JDK/JRE
 	import java.lang.Runnable;
+	import java.lang.String;
 	import java.sql.Timestamp;
 	import java.util.ArrayList;
 	import java.util.Date;
@@ -97,6 +98,15 @@ public class Spawner implements Runnable
 			List dragons = new ArrayList(world.getEntitiesByClass(EnderDragon.class));
 
 			if(dragons.size() >= plugin.config.maxDragons)
+				continue;
+
+			String worldName = world.getName().toUpperCase().toLowerCase();
+			int count = 0;
+
+			if(plugin.config.dragonCounts.containsKey(worldName))
+				count = plugin.config.dragonCounts.get(worldName);
+
+			if(count >= plugin.config.maxDragons)
 				continue;
 
 			Location location = new Location(world, 0, 128, 0);
