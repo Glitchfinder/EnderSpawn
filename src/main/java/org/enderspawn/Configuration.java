@@ -139,6 +139,10 @@ public class Configuration extends YamlConfiguration
 	{
 		Timestamp currentTime = new Timestamp(new Date().getTime());
 		ConfigurationSection playerSection = getConfigurationSection("Players");
+
+		if(playerSection == null)
+			return;
+
 		Map<String, Object> playerValues = playerSection.getValues(false);
 
 		if(playerValues.isEmpty())
@@ -171,6 +175,10 @@ public class Configuration extends YamlConfiguration
 	{
 		String name = "BannedPlayers";
 		ConfigurationSection playerSection = getConfigurationSection(name);
+
+		if(playerSection == null)
+			return;
+
 		Map<String, Object> playerValues = playerSection.getValues(false);
 
 		if(playerValues.isEmpty())
@@ -200,6 +208,10 @@ public class Configuration extends YamlConfiguration
 	{
 		String name = "DragonCounts";
 		ConfigurationSection dragonSection = getConfigurationSection(name);
+
+		if(dragonSection == null)
+			return;
+
 		Map<String, Object> dragonValues = dragonSection.getValues(false);
 
 		if(dragonValues.isEmpty())
