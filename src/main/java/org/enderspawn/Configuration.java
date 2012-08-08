@@ -85,6 +85,10 @@ public class Configuration extends YamlConfiguration
 
 	public void load()
 	{
+		players.clear();
+		bannedPlayers.clear();
+		dragonCounts.clear();
+
 		try
 		{
 			super.load(config);
