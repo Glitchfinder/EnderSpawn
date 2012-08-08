@@ -33,6 +33,7 @@ package org.enderspawn;
 	import java.util.HashMap;
 	import java.util.logging.Logger;
 	import java.util.Map;
+	import java.util.Set;
 //* IMPORTS: BUKKIT
 	import org.bukkit.configuration.ConfigurationSection;
 	import org.bukkit.configuration.file.YamlConfiguration;
@@ -121,7 +122,16 @@ public class Configuration extends YamlConfiguration
 		set("Configuration.MaxDragons",		maxDragons);
 		set("LastDeath", lastDeath.getTime());
 
-		createSection("Players", players);
+		HashMap<String,	Long>	playerLongs = new HashMap<String, Long>();
+		for(String key : players.keySet())
+		{
+			if(!players.containsKey(key))
+				continue;
+
+			playerLongs.put(key, players.get(key).getTime());
+		}
+
+		createSection("Players", playerLongs);
 		createSection("BannedPlayers", bannedPlayers);
 		createSection("DragonCounts", dragonCounts);
 
