@@ -180,6 +180,9 @@ public class EnderSpawnListener implements Listener
 		int droppedEXP = event.getDroppedExp();		
 		event.setDroppedExp(0);
 
+		if(plugin.config.useCustomExp)
+			droppedEXP = plugin.config.customExp;
+
 		World world = entity.getWorld();
 		String worldName = world.getName().toUpperCase().toLowerCase();
 

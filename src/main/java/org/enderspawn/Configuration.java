@@ -55,10 +55,12 @@ public class Configuration extends YamlConfiguration
 	public	boolean	spawnEgg;
 	public	boolean	spawnPortal;
 	public	boolean teleportEgg;
+	public	boolean	useCustomExp;
 	public	long	spawnMinutes;
 	public	long	expResetMinutes;
 	public	long	expMaxDistance;
 	public	int	maxDragons;
+	public	int	customExp;
 
 	public	Timestamp lastDeath;
 
@@ -75,10 +77,12 @@ public class Configuration extends YamlConfiguration
 		spawnEgg	= true;
 		spawnPortal	= false;
 		teleportEgg	= false;
+		useCustomExp	= false;
 		spawnMinutes	= 0;
 		expResetMinutes	= 1440;
 		expMaxDistance	= 75;
 		maxDragons	= 1;
+		customExp	= 20000;
 
 		lastDeath	= new Timestamp(0);
 	}
@@ -106,6 +110,8 @@ public class Configuration extends YamlConfiguration
 		expResetMinutes	= getLong("Configuration.EXPResetMinutes",	expResetMinutes);
 		expMaxDistance	= getLong("Configuration.EXPMaxDistance",	expMaxDistance);
 		maxDragons	= getInt("Configuration.MaxDragons",		maxDragons);
+		useCustomExp	= getBoolean("Configuration.UseCustomEXPTotal",	useCustomExp);
+		customExp	= getInt("Configuration.CustomEXPTotal",	customExp);
 		lastDeath	= new Timestamp(getLong("LastDeath",		0));
 
 		getPlayers();
@@ -124,6 +130,8 @@ public class Configuration extends YamlConfiguration
 		set("Configuration.EXPResetMinutes",	expResetMinutes);
 		set("Configuration.EXPMaxDistance",	expMaxDistance);
 		set("Configuration.MaxDragons",		maxDragons);
+		set("Configuration.UseCustomEXPTotal",	useCustomExp);
+		set("Configuration.CustomEXPTotal",	customExp);
 		set("LastDeath", lastDeath.getTime());
 
 		HashMap<String,	Long>	playerLongs = new HashMap<String, Long>();
