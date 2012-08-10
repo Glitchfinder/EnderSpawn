@@ -33,6 +33,7 @@ package org.enderspawn;
 //* IMPORTS: BUKKIT
 	import org.bukkit.entity.EnderDragon;
 	import org.bukkit.entity.EntityType;
+	import org.bukkit.entity.Player;
 	import org.bukkit.Location;
 	import org.bukkit.scheduler.BukkitScheduler;
 	import org.bukkit.World;
@@ -94,22 +95,41 @@ public class Spawner implements Runnable
 		{
 			if(world.getEnvironment() != World.Environment.valueOf("THE_END"))
 				continue;
+
+			List<Player> players = new ArrayList(world.getPlayers());
+			if(players.size() <= 0)
+				continue;
+
+			boolean nearbyPlayer = false;
+
+			Location location = new Location(world, 0, 128, 0);
+			for(Player player : players)
+			{
+				Location playerLocation = player.getLocation();
+				int x = playerLocation.getBlockX();
+				int z = playerLocation.getBlockZ();
+				Location relativeLocation = new Location(world, x, 128, z);
+
+				if(location.distance(relativeLocation) > 160)
+					continue;
+
+				nearbyPlayer = true;
+				break;
+			}
+
+			if(!nearbyPlayer)
+				continue;
 			
 			List dragons = new ArrayList(world.getEntitiesByClass(EnderDragon.class));
-
 			if(dragons.size() >= plugin.config.maxDragons)
 				continue;
 
 			String worldName = world.getName().toUpperCase().toLowerCase();
 			int count = 0;
 
-			if(plugin.config.dragonCounts.containsKey(worldName))
-				count = plugin.config.dragonCounts.get(worldName);
-
 			if(count >= plugin.config.maxDragons)
 				continue;
 
-			Location location = new Location(world, 0, 128, 0);
 			world.spawnCreature(location, EntityType.ENDER_DRAGON);
 		}
 

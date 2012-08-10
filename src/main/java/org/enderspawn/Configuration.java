@@ -49,7 +49,6 @@ public class Configuration extends YamlConfiguration
 
 	public	HashMap<String,	Timestamp>	players;
 	public	HashMap<String,	String>		bannedPlayers;
-	public	HashMap<String,	Integer>	dragonCounts;
 
 	public	boolean	destroyBlocks;
 	public	boolean	spawnEgg;
@@ -71,7 +70,6 @@ public class Configuration extends YamlConfiguration
 
 		players		= new HashMap<String, Timestamp>();
 		bannedPlayers	= new HashMap<String, String>();
-		dragonCounts	= new HashMap<String, Integer>();
 
 		destroyBlocks	= false;
 		spawnEgg	= true;
@@ -91,7 +89,6 @@ public class Configuration extends YamlConfiguration
 	{
 		players.clear();
 		bannedPlayers.clear();
-		dragonCounts.clear();
 
 		try
 		{
@@ -116,7 +113,6 @@ public class Configuration extends YamlConfiguration
 
 		getPlayers();
 		getBannedPlayers();
-		getDragons();
 		save();
 	}
 
@@ -145,7 +141,6 @@ public class Configuration extends YamlConfiguration
 
 		createSection("Players", playerLongs);
 		createSection("BannedPlayers", bannedPlayers);
-		createSection("DragonCounts", dragonCounts);
 
 		try
 		{
@@ -223,39 +218,6 @@ public class Configuration extends YamlConfiguration
 			player = player.toUpperCase().toLowerCase();
 
 			bannedPlayers.put(player, banReason);
-		}
-	}
-
-	public void getDragons()
-	{
-		String name = "DragonCounts";
-		ConfigurationSection dragonSection = getConfigurationSection(name);
-
-		if(dragonSection == null)
-			return;
-
-		Map<String, Object> dragonValues = dragonSection.getValues(false);
-
-		if(dragonValues.isEmpty())
-			return;
-
-		for(Object key : dragonValues.keySet())
-		{
-			if(!(key instanceof String))
-				continue;
-
-			String world = (String) key;
-			if(!dragonValues.containsKey(world))
-				continue;
-
-			Object tempInt = dragonValues.get(world);
-			if(!(tempInt instanceof Integer))
-				continue;
-
-			int count = (Integer) tempInt;
-			world = world.toUpperCase().toLowerCase();
-
-			dragonCounts.put(world, count);
 		}
 	}
 }

@@ -32,12 +32,12 @@ package org.enderspawn;
 	import java.util.List;
 //* IMPORTS: BUKKIT
 	import org.bukkit.block.BlockState;
+	import org.bukkit.Chunk;
 	import org.bukkit.entity.EnderDragon;
 	import org.bukkit.entity.Entity;
 	import org.bukkit.entity.LivingEntity;
 	import org.bukkit.entity.Player;
 	import org.bukkit.event.block.BlockFromToEvent;
-	import org.bukkit.event.entity.CreatureSpawnEvent;
 	import org.bukkit.event.entity.EntityCreatePortalEvent;
 	import org.bukkit.event.entity.EntityDeathEvent;
 	import org.bukkit.event.entity.EntityExplodeEvent;
@@ -46,6 +46,7 @@ package org.enderspawn;
 	import org.bukkit.event.EventHandler;
 	import org.bukkit.event.EventPriority;
 	import org.bukkit.event.Listener;
+	import org.bukkit.event.world.ChunkUnloadEvent;
 	import org.bukkit.inventory.ItemStack;
 	import org.bukkit.Location;
 	import org.bukkit.plugin.PluginManager;
@@ -75,21 +76,29 @@ public class EnderSpawnListener implements Listener
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void onCreatureSpawn(CreatureSpawnEvent event)
+	public void onChunkUnload(ChunkUnloadEvent event)
 	{
-		if (!(event.getEntity() instanceof EnderDragon))
-			return;
+		World world = event.getWorld();
+		if(world.getEnvironment() != World.Environment.valueOf("THE_END"))
+				return;
 
-		String worldName = event.getEntity().getWorld().getName();
-		worldName = worldName.toUpperCase().toLowerCase();
+		Chunk chunk = event.getChunk();
+		Entity[] entities = chunk.getEntities();
 
-		if(!plugin.config.dragonCounts.containsKey(worldName))
-			plugin.config.dragonCounts.put(worldName, 0);
+		for(Entity entity : entities)
+		{
+			if(entity == null)
+				continue;
 
-		int count = plugin.config.dragonCounts.get(worldName);
-		count += 1;
-		plugin.config.dragonCounts.put(worldName, count);
-		plugin.config.save();
+			if (!(entity instanceof EnderDragon))
+				continue;
+
+			EntityDeathEvent newEvent;
+			newEvent = new EntityDeathEvent((LivingEntity) entity, new ArrayList());
+			plugin.getServer().getPluginManager().callEvent(newEvent);
+			entity.remove();
+		}
+		return;
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -183,20 +192,7 @@ public class EnderSpawnListener implements Listener
 		if(plugin.config.useCustomExp)
 			droppedEXP = plugin.config.customExp;
 
-		World world = entity.getWorld();
-		String worldName = world.getName().toUpperCase().toLowerCase();
-
-		if(!plugin.config.dragonCounts.containsKey(worldName))
-			plugin.config.dragonCounts.put(worldName, 0);
-
-		int count = plugin.config.dragonCounts.get(worldName);
-		if(count > 0)
-		{
-			count -= 1;
-			plugin.config.dragonCounts.put(worldName, count);
-		}
-
-		List<Player> players = world.getPlayers();
+		List<Player> players = entity.getWorld().getPlayers();
 
 		Location enderDragonLocation = entity.getLocation();
 
