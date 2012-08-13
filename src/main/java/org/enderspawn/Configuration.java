@@ -55,7 +55,8 @@ public class Configuration extends YamlConfiguration
 	public	boolean	spawnPortal;
 	public	boolean teleportEgg;
 	public	boolean	useCustomExp;
-	public	long	spawnMinutes;
+	public	long	maxSpawnMinutes;
+	public	long	minSpawnMinutes;
 	public	long	expResetMinutes;
 	public	long	expMaxDistance;
 	public	int	maxDragons;
@@ -76,8 +77,9 @@ public class Configuration extends YamlConfiguration
 		spawnPortal	= false;
 		teleportEgg	= false;
 		useCustomExp	= false;
-		spawnMinutes	= 0;
-		expResetMinutes	= 1440;
+		maxSpawnMinutes	= 5;
+		minSpawnMinutes = 5;
+		expResetMinutes	= 1200;
 		expMaxDistance	= 75;
 		maxDragons	= 1;
 		customExp	= 20000;
@@ -103,7 +105,8 @@ public class Configuration extends YamlConfiguration
 		spawnEgg	= getBoolean("Configuration.SpawnEgg",		spawnEgg);
 		spawnPortal	= getBoolean("Configuration.SpawnPortal",	spawnPortal);
 		teleportEgg	= getBoolean("Configuration.EggsCanTeleport",	teleportEgg);
-		spawnMinutes	= getLong("Configuration.RespawnMinutes",	spawnMinutes);
+		maxSpawnMinutes	= getLong("Configuration.MaxRespawnMinutes",	maxSpawnMinutes);
+		minSpawnMinutes	= getLong("Configuration.MinRespawnMinutes",	minSpawnMinutes);
 		expResetMinutes	= getLong("Configuration.EXPResetMinutes",	expResetMinutes);
 		expMaxDistance	= getLong("Configuration.EXPMaxDistance",	expMaxDistance);
 		maxDragons	= getInt("Configuration.MaxDragons",		maxDragons);
@@ -122,7 +125,8 @@ public class Configuration extends YamlConfiguration
 		set("Configuration.SpawnEgg",		spawnEgg);
 		set("Configuration.SpawnPortal",	spawnPortal);
 		set("Configuration.EggsCanTeleport",	teleportEgg);
-		set("Configuration.RespawnMinutes",	spawnMinutes);
+		set("Configuration.MaxRespawnMinutes",	maxSpawnMinutes);
+		set("Configuration.MinRespawnMinutes",	minSpawnMinutes);
 		set("Configuration.EXPResetMinutes",	expResetMinutes);
 		set("Configuration.EXPMaxDistance",	expMaxDistance);
 		set("Configuration.MaxDragons",		maxDragons);

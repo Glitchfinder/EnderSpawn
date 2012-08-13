@@ -1,5 +1,5 @@
 name: EnderSpawn
-version: 0.1
+version: 1.0
 description: This plugin adds a dynamic control system for the Enderdragon in The End.
 author: Glitchfinder 
 website: https://github.com/Glitchfinder/EnderSpawn
@@ -21,6 +21,17 @@ commands:
 
 permissions:
   enderspawn.*:
+    description: Access to everything related to the EnderSpawn plugin.
+    children:
+      enderspawn.ban: true
+      enderspawn.reload: true
+      enderspawn.lookup: true
+      enderspawn.status: true
+      enderspawn.status.other: true
+      enderspawn.exp: true
+      enderspawn.unlimitedexp: true
+      enderspawn.reset: true
+  enderspawn.admin:
     description: Access to everything related to the EnderSpawn plugin.
     children:
       enderspawn.ban: true

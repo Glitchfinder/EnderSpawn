@@ -34,6 +34,7 @@ Commands:
 
 Permissions:
 	- enderspawn.*			- Access to everything related to the EnderSpawn plugin.
+	- enderspawn.admin		- Access to everything related to the EnderSpawn plugin.
 	- enderspawn.ban		- Access to the /enderspawn ban and /enderspawn unban commands.
 	- enderspawn.reload		- Access to the /enderspawn reload command.
 	- enderspawn.lookup		- Access to the /enderspawn lookup command.

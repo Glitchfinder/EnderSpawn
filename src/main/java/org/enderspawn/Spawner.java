@@ -30,6 +30,7 @@ package org.enderspawn;
 	import java.util.ArrayList;
 	import java.util.Date;
 	import java.util.List;
+	import java.util.Random;
 //* IMPORTS: BUKKIT
 	import org.bukkit.entity.EnderDragon;
 	import org.bukkit.entity.EntityType;
@@ -62,7 +63,7 @@ public class Spawner implements Runnable
 		Timestamp currentTime 	= new Timestamp(new Date().getTime());
 		Timestamp lastDeath	= this.plugin.config.lastDeath;
 
-		long spawnMinutes	= this.plugin.config.spawnMinutes;
+		long spawnMinutes	= this.plugin.config.maxSpawnMinutes;
 
 		BukkitScheduler scheduler = plugin.getServer().getScheduler();
 		if(currentTime.getTime() >= (lastDeath.getTime() + (spawnMinutes * 60000)))
@@ -73,7 +74,14 @@ public class Spawner implements Runnable
 
 		long timeRemaining = (lastDeath.getTime() + (spawnMinutes * 60000));
 		timeRemaining -=  currentTime.getTime();
-		long ticksRemaining = (timeRemaining / 50);
+		long maxTicksRemaining = (timeRemaining / 50);
+
+		long minSpawnMinutes = this.plugin.config.minSpawnMinutes;
+		long minTicksRemaining = maxTicksRemaining - (minSpawnMinutes * 1200);
+		long tickDifference = maxTicksRemaining - minTicksRemaining;
+
+		long ticksRemaining = ((new Random()).nextLong() % tickDifference);
+		ticksRemaining += minTicksRemaining;
 
 		taskID = scheduler.scheduleSyncDelayedTask(plugin, this, ticksRemaining);
 	}
@@ -131,6 +139,7 @@ public class Spawner implements Runnable
 				continue;
 
 			world.spawnCreature(location, EntityType.ENDER_DRAGON);
+			this.plugin.config.lastDeath = new Timestamp(0);
 		}
 
 		stop();
