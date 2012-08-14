@@ -1,9 +1,10 @@
 == EnderSpawn ==
 **[[http://ci.bitmissile.com/job/EnderSpawn/lastSuccessfulBuild/artifact/target/EnderSpawn.jar|Download]] | [[https://github.com/Glitchfinder/EnderSpawn|Source]] | [[https://github.com/Glitchfinder/EnderSpawn/issues|Issue Tracker]]**
 
-Enderspawn is a simple idea, with a fully fleshed out implementation. What if you want your players to battle the Ender Dragon more than once, without having to use a command to spawn them, and without having to regenerate the whole world? What if you want the Ender Dragon to not litter and destroy the world that created it? What if you wanted a fairer experience distribution system, one that allows for all players to earn the experience if they were close enough to kill it?
+Enderspawn is a simple idea, with a fully fleshed out implementation. What if you want your players to battle the Ender Dragon more than once, without having to use a command to spawn them, and without having to regenerate the whole world? What if you don't want the Ender Dragon to litter or destroy the world that created it? What if you wanted a fairer experience distribution system, one that allows for all players to earn the experience if they were close enough to kill it?
 
-If those are things you've wanted, then this is the plugin for you! It allows for all of this, as well as significantly more!\\\\
+If those are things you've wanted, then this is the plugin for you! It allows for all of this, as well as significantly more!
+
 === Features ===
 * Prevents Ender Dragons from destroying blocks. (Can be toggled)
 * Prevents Ender Dragons from spawning a portal. (Can be toggled)
@@ -26,7 +27,7 @@ If those are things you've wanted, then this is the plugin for you! It allows fo
 * Displays current cooldown status upon entering the end, or logging in while in the end.
 * Has a fully functional reload command that loads data directly from the config file, and is not broken like in a significant number of plugins.
 * Has almost no added overhead. This plugin basically does nothing, and even plugins that look much more minor have more overhead.
-\\\\
+
 === Commands ===
 |= Command |= Alias |= Description |
 | /enderspawn reload | /es reload | Reloads the configuration.|
@@ -35,7 +36,7 @@ If those are things you've wanted, then this is the plugin for you! It allows fo
 | /enderspawn lookup	[player] | /es lookup [player] | Allows a player to lookup ban statuses for the plugin.|
 | /enderspawn status <player> | /es status <player> | Allows a player to lookup their experience status for the plugin.|
 | /enderspawn reset | /es reset | Allows a player to reset experience cooldowns.|
-\\
+
 === Permissions ===
 |= Permission Node |= Effect |
 | enderspawn.* | Access to everything related to the EnderSpawn plugin.|
