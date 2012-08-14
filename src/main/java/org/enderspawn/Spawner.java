@@ -38,7 +38,6 @@ package org.enderspawn;
 	import org.bukkit.Location;
 	import org.bukkit.scheduler.BukkitScheduler;
 	import org.bukkit.World;
-	import org.bukkit.World.Environment;
 //* IMPORTS: SPOUT
 	//* NOT NEEDED
 //* IMPORTS: OTHER
@@ -61,9 +60,26 @@ public class Spawner implements Runnable
 			return;
 
 		Timestamp currentTime 	= new Timestamp(new Date().getTime());
-		Timestamp lastDeath	= this.plugin.config.lastDeath;
+		Timestamp lastDeath	= new Timestamp(currentTime.getTime());
 
-		long spawnMinutes	= this.plugin.config.maxSpawnMinutes;
+		for(String key : this.plugin.data.lastDeath.keySet())
+		{
+			if(!this.plugin.data.lastDeath.containsKey(key))
+				continue;
+
+			Timestamp death = this.plugin.data.lastDeath.get(key);
+
+			if(death.getTime() <= 0)
+				continue;
+
+			if(death.getTime() < lastDeath.getTime())
+				lastDeath = death;
+		}
+
+		if(lastDeath.getTime() == currentTime.getTime())
+			lastDeath = new Timestamp(0);
+
+		long spawnMinutes = this.plugin.config.maxSpawnMinutes;
 
 		BukkitScheduler scheduler = plugin.getServer().getScheduler();
 		if(currentTime.getTime() >= (lastDeath.getTime() + (spawnMinutes * 60000)))
@@ -83,6 +99,9 @@ public class Spawner implements Runnable
 		long ticksRemaining = ((new Random()).nextLong() % tickDifference);
 		ticksRemaining += minTicksRemaining;
 
+		if(ticksRemaining < 200)
+			ticksRemaining = 200;
+
 		taskID = scheduler.scheduleSyncDelayedTask(plugin, this, ticksRemaining);
 	}
 
@@ -101,7 +120,17 @@ public class Spawner implements Runnable
 
 		for (World world : worlds)
 		{
-			if(world.getEnvironment() != World.Environment.valueOf("THE_END"))
+			String worldName = world.getName().toUpperCase().toLowerCase();
+			if(!plugin.config.worlds.containsKey(worldName))
+				continue;
+
+			if(!plugin.config.xCoords.containsKey(worldName))
+				continue;
+
+			if(!plugin.config.yCoords.containsKey(worldName))
+				continue;
+
+			if(!plugin.config.zCoords.containsKey(worldName))
 				continue;
 
 			List<Player> players = new ArrayList(world.getPlayers());
@@ -110,13 +139,17 @@ public class Spawner implements Runnable
 
 			boolean nearbyPlayer = false;
 
-			Location location = new Location(world, 0, 128, 0);
+			int spawnX = plugin.config.xCoords.get(worldName);
+			int spawnY = plugin.config.yCoords.get(worldName);
+			int spawnZ = plugin.config.zCoords.get(worldName);
+
+			Location location = new Location(world, spawnX, spawnY, spawnZ);
 			for(Player player : players)
 			{
 				Location playerLocation = player.getLocation();
 				int x = playerLocation.getBlockX();
 				int z = playerLocation.getBlockZ();
-				Location relativeLocation = new Location(world, x, 128, z);
+				Location relativeLocation = new Location(world, x, spawnY, z);
 
 				if(location.distance(relativeLocation) > 160)
 					continue;
@@ -127,21 +160,32 @@ public class Spawner implements Runnable
 
 			if(!nearbyPlayer)
 				continue;
-			
+
 			List dragons = new ArrayList(world.getEntitiesByClass(EnderDragon.class));
-			if(dragons.size() >= plugin.config.maxDragons)
+
+			int maxDragons = plugin.config.worlds.get(worldName);
+			if(dragons.size() >= maxDragons)
 				continue;
 
-			String worldName = world.getName().toUpperCase().toLowerCase();
 			int count = 0;
 
-			if(count >= plugin.config.maxDragons)
+			if(count >= maxDragons)
 				continue;
 
-			world.spawnCreature(location, EntityType.ENDER_DRAGON);
-			this.plugin.config.lastDeath = new Timestamp(0);
-		}
+			Timestamp currentTime 	= new Timestamp(new Date().getTime());
+			Timestamp lastDeath	= new Timestamp(0);
 
+			if(this.plugin.data.lastDeath.containsKey(worldName))
+				lastDeath = this.plugin.data.lastDeath.get(worldName);
+
+			long spawnMinutes = this.plugin.config.minSpawnMinutes;
+
+			if(currentTime.getTime() >= (lastDeath.getTime() + (spawnMinutes * 60000)))
+			{
+				world.spawnCreature(location, EntityType.ENDER_DRAGON);
+				this.plugin.data.lastDeath.put(worldName, new Timestamp(0));
+			}
+		}
 		stop();
 	}
 }

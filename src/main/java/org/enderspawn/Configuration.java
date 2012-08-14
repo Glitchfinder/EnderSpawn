@@ -31,12 +31,15 @@ package org.enderspawn;
 	import java.sql.Timestamp;
 	import java.util.Date;
 	import java.util.HashMap;
+	import java.util.List;
 	import java.util.logging.Logger;
 	import java.util.Map;
 	import java.util.Set;
 //* IMPORTS: BUKKIT
 	import org.bukkit.configuration.ConfigurationSection;
 	import org.bukkit.configuration.file.YamlConfiguration;
+	import org.bukkit.World;
+	import org.bukkit.World.Environment;
 //* IMPORTS: SPOUT
 	//* NOT NEEDED
 //* IMPORTS: OTHER
@@ -46,9 +49,12 @@ public class Configuration extends YamlConfiguration
 {
 	private	File config;
 	private Logger log;
+	private EnderSpawn plugin;
 
-	public	HashMap<String,	Timestamp>	players;
-	public	HashMap<String,	String>		bannedPlayers;
+	public	HashMap<String, Integer>	worlds;
+	public	HashMap<String, Integer> 	xCoords;
+	public	HashMap<String, Integer> 	yCoords;
+	public	HashMap<String, Integer> 	zCoords;
 
 	public	boolean	destroyBlocks;
 	public	boolean	spawnEgg;
@@ -59,18 +65,18 @@ public class Configuration extends YamlConfiguration
 	public	long	minSpawnMinutes;
 	public	long	expResetMinutes;
 	public	long	expMaxDistance;
-	public	int	maxDragons;
 	public	int	customExp;
 
-	public	Timestamp lastDeath;
-
-	public Configuration(File config, Logger log)
+	public Configuration(File config, Logger log, EnderSpawn plugin)
 	{
 		this.config	= config;
 		this.log	= log;
+		this.plugin	= plugin;
 
-		players		= new HashMap<String, Timestamp>();
-		bannedPlayers	= new HashMap<String, String>();
+		worlds		= new HashMap<String, Integer>();
+		xCoords		= new HashMap<String, Integer>();
+		yCoords		= new HashMap<String, Integer>();
+		zCoords		= new HashMap<String, Integer>();
 
 		destroyBlocks	= false;
 		spawnEgg	= true;
@@ -81,17 +87,11 @@ public class Configuration extends YamlConfiguration
 		minSpawnMinutes = 5;
 		expResetMinutes	= 1200;
 		expMaxDistance	= 75;
-		maxDragons	= 1;
 		customExp	= 20000;
-
-		lastDeath	= new Timestamp(0);
 	}
 
 	public void load()
 	{
-		players.clear();
-		bannedPlayers.clear();
-
 		try
 		{
 			super.load(config);
@@ -101,6 +101,29 @@ public class Configuration extends YamlConfiguration
 			log.warning("Unable to load configuration, using defaults instead.");
 		}
 
+		if(contains("Configuration"))
+		{
+			loadLegacy();
+			return;
+		}
+
+		destroyBlocks	= getBoolean("DestroyBlocks",		destroyBlocks);
+		spawnEgg	= getBoolean("SpawnEgg",		spawnEgg);
+		spawnPortal	= getBoolean("SpawnPortal",		spawnPortal);
+		teleportEgg	= getBoolean("EggsCanTeleport",		teleportEgg);
+		maxSpawnMinutes	= getLong("MaxRespawnMinutes",		maxSpawnMinutes);
+		minSpawnMinutes	= getLong("MinRespawnMinutes",		minSpawnMinutes);
+		expResetMinutes	= getLong("EXPResetMinutes",		expResetMinutes);
+		expMaxDistance	= getLong("EXPMaxDistance",		expMaxDistance);
+		useCustomExp	= getBoolean("UseCustomEXPTotal",	useCustomExp);
+		customExp	= getInt("CustomEXPTotal",		customExp);
+
+		getWorlds();
+	}
+
+	public void loadLegacy()
+	{
+		log.info("Converting configuration to the current format.");
 		destroyBlocks	= getBoolean("Configuration.DestroyBlocks",	destroyBlocks);
 		spawnEgg	= getBoolean("Configuration.SpawnEgg",		spawnEgg);
 		spawnPortal	= getBoolean("Configuration.SpawnPortal",	spawnPortal);
@@ -109,11 +132,10 @@ public class Configuration extends YamlConfiguration
 		minSpawnMinutes	= getLong("Configuration.MinRespawnMinutes",	minSpawnMinutes);
 		expResetMinutes	= getLong("Configuration.EXPResetMinutes",	expResetMinutes);
 		expMaxDistance	= getLong("Configuration.EXPMaxDistance",	expMaxDistance);
-		maxDragons	= getInt("Configuration.MaxDragons",		maxDragons);
 		useCustomExp	= getBoolean("Configuration.UseCustomEXPTotal",	useCustomExp);
 		customExp	= getInt("Configuration.CustomEXPTotal",	customExp);
-		lastDeath	= new Timestamp(getLong("LastDeath",		0));
 
+		addWorlds();
 		getPlayers();
 		getBannedPlayers();
 		save();
@@ -121,34 +143,52 @@ public class Configuration extends YamlConfiguration
 
 	public void save()
 	{
-		set("Configuration.DestroyBlocks",	destroyBlocks);
-		set("Configuration.SpawnEgg",		spawnEgg);
-		set("Configuration.SpawnPortal",	spawnPortal);
-		set("Configuration.EggsCanTeleport",	teleportEgg);
-		set("Configuration.MaxRespawnMinutes",	maxSpawnMinutes);
-		set("Configuration.MinRespawnMinutes",	minSpawnMinutes);
-		set("Configuration.EXPResetMinutes",	expResetMinutes);
-		set("Configuration.EXPMaxDistance",	expMaxDistance);
-		set("Configuration.MaxDragons",		maxDragons);
-		set("Configuration.UseCustomEXPTotal",	useCustomExp);
-		set("Configuration.CustomEXPTotal",	customExp);
-		set("LastDeath", lastDeath.getTime());
+		YamlConfiguration newConfig = new YamlConfiguration();
 
-		HashMap<String,	Long>	playerLongs = new HashMap<String, Long>();
-		for(String key : players.keySet())
+		newConfig.set("DestroyBlocks",		destroyBlocks);
+		newConfig.set("SpawnEgg",		spawnEgg);
+		newConfig.set("SpawnPortal",		spawnPortal);
+		newConfig.set("EggsCanTeleport",	teleportEgg);
+		newConfig.set("MaxRespawnMinutes",	maxSpawnMinutes);
+		newConfig.set("MinRespawnMinutes",	minSpawnMinutes);
+		newConfig.set("EXPResetMinutes",	expResetMinutes);
+		newConfig.set("EXPMaxDistance",		expMaxDistance);
+		newConfig.set("UseCustomEXPTotal",	useCustomExp);
+		newConfig.set("CustomEXPTotal",		customExp);
+
+		ConfigurationSection worldSection = newConfig.createSection("Worlds");
+
+		for(String key : worlds.keySet())
 		{
-			if(!players.containsKey(key))
+			if(key == null)
 				continue;
 
-			playerLongs.put(key, players.get(key).getTime());
+			if(!worlds.containsKey(key))
+				continue;
+
+			if(!xCoords.containsKey(key))
+				continue;
+
+			if(!yCoords.containsKey(key))
+				continue;
+
+			if(!zCoords.containsKey(key))
+				continue;
+
+			ConfigurationSection world = worldSection.createSection(key);
+			world.set("MaxDragons", worlds.get(key));
+
+			ConfigurationSection spawn = world.createSection("SpawnPoint");
+			spawn.set("X", xCoords.get(key));
+			spawn.set("Y", yCoords.get(key));
+			spawn.set("Z", zCoords.get(key));
 		}
 
-		createSection("Players", playerLongs);
-		createSection("BannedPlayers", bannedPlayers);
+		File configurationFile = new File(plugin.getDataFolder(), "config.yml");
 
 		try
 		{
-			super.save(config);
+			newConfig.save(configurationFile);
 		}
 		catch(Exception e)
 		{
@@ -188,7 +228,7 @@ public class Configuration extends YamlConfiguration
 			if(currentTime.getTime() >= (time.getTime() + (expResetMinutes * 60000)))
 				continue;
 
-			players.put(player, time);
+			this.plugin.data.players.put(player, time);
 		}
 	}
 
@@ -221,7 +261,62 @@ public class Configuration extends YamlConfiguration
 			String banReason = (String) tempString;
 			player = player.toUpperCase().toLowerCase();
 
-			bannedPlayers.put(player, banReason);
+			this.plugin.data.bannedPlayers.put(player, banReason);
+		}
+	}
+
+	public void getWorlds()
+	{
+		ConfigurationSection worldSection = getConfigurationSection("Worlds");
+
+		if(worldSection == null)
+			return;
+
+		Map<String, Object> worldValues = worldSection.getValues(false);
+
+		if(worldValues.isEmpty())
+			return;
+
+		for(Object key : worldValues.keySet())
+		{
+			if(!(key instanceof String))
+				continue;
+
+			String world	= (String) key;
+			String name	= world.toUpperCase().toLowerCase();
+			if(!worldValues.containsKey(world))
+				continue;
+
+			Object tempObject = worldValues.get(world);
+			if(!(tempObject instanceof ConfigurationSection))
+				continue;
+
+			ConfigurationSection section = (ConfigurationSection) tempObject;
+
+			worlds.put(name, section.getInt("MaxDragons", 1));
+			xCoords.put(name, section.getInt("X", 0));
+			yCoords.put(name, section.getInt("Y", 128));
+			zCoords.put(name, section.getInt("Z", 0));
+		}
+	}
+
+	public void addWorlds()
+	{
+	
+		List<World> worldList = plugin.getServer().getWorlds();
+		for (World world : worldList)
+		{
+			if(world.getEnvironment() != World.Environment.valueOf("THE_END"))
+				continue;
+
+			String name = world.getName().toUpperCase().toLowerCase();
+			worlds.put(name, getInt("Configuration.MaxDragons", 1));
+			xCoords.put(name, 0);
+			yCoords.put(name, 128);
+			zCoords.put(name, 0);
+
+			long deathLong = getLong("LastDeath", 0);
+			this.plugin.data.lastDeath.put(name, new Timestamp(deathLong));
 		}
 	}
 }

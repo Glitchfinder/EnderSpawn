@@ -25,6 +25,12 @@ package org.enderspawn;
 
 //* IMPORTS: JDK/JRE
 	import java.io.File;
+	import java.io.FileInputStream;
+	import java.io.FileOutputStream;
+	import java.io.InputStream;
+	import java.io.ObjectInputStream;
+	import java.io.ObjectOutputStream;
+	import java.io.OutputStream;
 	import java.lang.String;
 	import java.util.Date;
 //* IMPORTS: BUKKIT
@@ -42,6 +48,7 @@ public class EnderSpawn extends JavaPlugin
 	public static String pluginName = "EnderSpawn";
 
 	public	Configuration		config;
+	public	Data			data;
 	public	Spawner			spawner;
 	private	EnderSpawnListener	listener;
 	private	EnderSpawnCommand	command;
@@ -51,11 +58,15 @@ public class EnderSpawn extends JavaPlugin
 	{
 		File configurationFile = new File(getDataFolder(), "config.yml");
 
-		log		= this.getLogger();
-		config		= new Configuration(configurationFile, log);
-		listener	= new EnderSpawnListener(this);
-		spawner		= new Spawner(this);
-		command		= new EnderSpawnCommand(this);
+		this.log	= this.getLogger();
+		this.data	= new Data();
+		loadData();
+
+		copyConfig();
+		this.config	= new Configuration(configurationFile, log, this);
+		this.listener	= new EnderSpawnListener(this);
+		this.spawner	= new Spawner(this);
+		this.command	= new EnderSpawnCommand(this);
 	}
 
 	public void onEnable()
@@ -70,16 +81,17 @@ public class EnderSpawn extends JavaPlugin
 	public void onDisable()
 	{
 		spawner.stop();
-		config.save();
+		saveData(false);
 	}
 
 	public void reload()
 	{
 		spawner.stop();
+		saveData(false);
 		config.load();
 		spawner.start();
 
-		log.info(getDescription().getVersion() + "%s reloaded.");
+		log.info(getDescription().getVersion() + " reloaded.");
 	}
 
 	public boolean hasPermission(CommandSender sender, String perm)
@@ -129,7 +141,7 @@ public class EnderSpawn extends JavaPlugin
 
 		String playerName = (name == null) ? sender.getName() : name;
 
-		if(config.bannedPlayers.get(playerName) != null)
+		if(data.bannedPlayers.get(playerName) != null)
 		{
 			String message = pronoun + (other ? " is " : " are ");
 			message += "not allowed to receive experience from the Ender Dragon.";
@@ -206,9 +218,88 @@ public class EnderSpawn extends JavaPlugin
 
 		long time = 0;
 
-		if(config.players.get(caselessPlayerName) != null)
-			time = config.players.get(caselessPlayerName).getTime();
+		if(data.players.get(caselessPlayerName) != null)
+			time = data.players.get(caselessPlayerName).getTime();
 
 		return status(player, time, name);
+	}
+
+	public void loadData()
+	{
+		File dataFile;
+
+		try
+		{
+			dataFile = new File(getDataFolder(), "Data.bin");
+
+			if(!dataFile.exists())
+				return;
+
+			FileInputStream fis = new FileInputStream(dataFile);
+			ObjectInputStream in = new ObjectInputStream(fis);
+			data = (Data) in.readObject();
+			in.close();
+			log.info("Successfully loaded all data.");
+		}
+		catch(Exception e)
+		{
+			log.info("Unable to read the data file. It may be corrupt.");
+		}
+
+		saveData();
+	}
+
+	public void saveData(boolean silent)
+	{
+		try {
+			File dataFile = new File(getDataFolder(), "Data.bin");
+			FileOutputStream fos = new FileOutputStream(dataFile);
+			ObjectOutputStream out = new ObjectOutputStream(fos);
+			out.writeObject(data);
+			out.close();
+
+			if(silent)
+				return;
+
+			log.info("Successfully saved all data.");
+		} catch (Exception e) {
+			log.info("Unable to save the data file. It may be corrupt.");
+		}
+	}
+
+	public void saveData()
+	{
+		this.saveData(true);
+	}
+
+	public boolean copyConfig()
+	{
+		File sourceFile;
+		File destinationFile;
+		try
+		{
+			destinationFile = new File(getDataFolder(), "config.yml");
+
+			if(destinationFile.exists())
+				return false;
+
+			destinationFile.createNewFile();
+
+			InputStream inputStream = getClass().getResourceAsStream("/config.yml");
+			OutputStream out = new FileOutputStream(destinationFile);
+			byte buffer[] = new byte[1024];
+			int length;
+
+			while((length = inputStream.read(buffer)) > 0)
+				out.write(buffer, 0, length);
+
+			out.close();
+			inputStream.close();
+			return true;
+		}
+		catch(Exception e)
+		{
+			return false;
+		}
 	}
 }

@@ -188,8 +188,9 @@ public class EnderSpawnListener implements Listener
 		if(droppedEXP <= 0)
 			return;
 
-		plugin.config.lastDeath = new Timestamp(new Date().getTime());
-		plugin.config.save();
+		String worldName = entity.getWorld().getName().toUpperCase().toLowerCase();
+		plugin.data.lastDeath.put(worldName, new Timestamp(new Date().getTime()));
+		plugin.saveData();
 		plugin.spawner.start();
 
 		if(plugin.config.useCustomExp)
@@ -222,10 +223,10 @@ public class EnderSpawnListener implements Listener
 
 			String playerName = player.getName().toUpperCase().toLowerCase();
 
-			if(plugin.config.bannedPlayers.containsKey(playerName))
+			if(plugin.data.bannedPlayers.containsKey(playerName))
 				continue;
 
-			Timestamp time = plugin.config.players.get(playerName);
+			Timestamp time = plugin.data.players.get(playerName);
 
 			long requiredTime = new Date().getTime();
 			requiredTime -= plugin.config.expResetMinutes * 60000;
@@ -242,10 +243,10 @@ public class EnderSpawnListener implements Listener
 				continue;
 
 			Timestamp now = new Timestamp(new Date().getTime());
-			plugin.config.players.put(playerName, now);
+			plugin.data.players.put(playerName, now);
 		}
 
-		plugin.config.save();
+		plugin.saveData();
 	}
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
