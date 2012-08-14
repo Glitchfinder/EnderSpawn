@@ -137,7 +137,8 @@ public class EnderSpawnCommand implements CommandExecutor
 		plugin.data.bannedPlayers.remove(player);
 		plugin.saveData();
 
-		String message = "Allowed " + args[1] + " to receive Ender Dragon experience.";
+		String message = "Allowed " + args[1];
+		message += " to receive Ender Dragon experience.";
 		Message.info(sender, message);
 
 		return true;
@@ -228,7 +229,8 @@ public class EnderSpawnCommand implements CommandExecutor
 		plugin.data.players.remove(player);
 		plugin.saveData();
 
-		String message = "Allowed " + args[1] + " to receive Ender Dragon experience.";
+		String message = "Allowed " + args[1];
+		message += " to receive Ender Dragon experience.";
 		Message.info(sender, message);
 
 		return true;

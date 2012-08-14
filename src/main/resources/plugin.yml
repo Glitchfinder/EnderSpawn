@@ -1,6 +1,7 @@
 name: EnderSpawn
 version: 1.0
-description: This plugin adds a dynamic control system for the Enderdragon in The End.
+description: >
+  This plugin adds a dynamic control system for the Enderdragon in The End.
 author: Glitchfinder 
 website: https://github.com/Glitchfinder/EnderSpawn
 
@@ -21,7 +22,8 @@ commands:
 
 permissions:
   enderspawn.*:
-    description: Access to everything related to the EnderSpawn plugin.
+    description: >
+      Access to everything related to the EnderSpawn plugin.
     children:
       enderspawn.ban: true
       enderspawn.reload: true
@@ -32,7 +34,8 @@ permissions:
       enderspawn.unlimitedexp: true
       enderspawn.reset: true
   enderspawn.admin:
-    description: Access to everything related to the EnderSpawn plugin.
+    description: >
+      Access to everything related to the EnderSpawn plugin.
     children:
       enderspawn.ban: true
       enderspawn.reload: true
@@ -43,26 +46,34 @@ permissions:
       enderspawn.unlimitedexp: true
       enderspawn.reset: true
   enderspawn.ban:
-    description: Access to the /enderspawn ban and /enderspawn unban commands.
+    description: >
+      Access to the /enderspawn ban and /enderspawn unban commands.
     default: op
   enderspawn.reload:
-    description: Access to the /enderspawn reload command.
+    description: >
+      Access to the /enderspawn reload command.
     default: op
   enderspawn.lookup:
-    description: Access to the /enderspawn lookup command.
+    description: >
+      Access to the /enderspawn lookup command.
     default: op
   enderspawn.status:
-    description: Access to the /enderspawn status command.
+    description: >
+      Access to the /enderspawn status command.
     default: true
   enderspawn.status.other:
-    description: Access to the /enderspawn status <playername> command.
+    description: >
+      Access to the /enderspawn status <playername> command.
     default: op
   enderspawn.exp:
-    description: Access to the experience dropped by the EnderDragon.
+    description: >
+      Access to the experience dropped by the EnderDragon.
     default: true
   enderspawn.unlimitedexp:
-    description: Access to the experience dropped by the EnderDragon, without the cooldown.
+    description: >
+      Access to the experience dropped by the EnderDragon, without the cooldown.
     default: op
   enderspawn.reset:
-    description: Access to the /enderspawn reset command.
+    description: >
+      Access to the /enderspawn reset command.
     default: op
