@@ -51,29 +51,21 @@ plugins that look much more minor have more overhead.
 === Commands ===
 |= Command |= Alias |= Description |
 | /enderspawn reload | /es reload | Reloads the configuration.|
-| /enderspawn ban [player] [reason] | /es ban [player] [reason] | Bans a ~
-player from receiving experience from the enderdragon.|
-| /enderspawn unban [player] | /es unban [player] | Allows a player banned ~
-from receiving experience from the enderdragon to get it again.|
-| /enderspawn lookup	[player] | /es lookup [player] | Allows a player to ~
-lookup ban statuses for the plugin.|
-| /enderspawn status <player> | /es status <player> | Allows a player to ~
-lookup their experience status for the plugin.|
-| /enderspawn reset | /es reset | Allows a player to reset experience ~
-cooldowns.|
+| /enderspawn ban [player] [reason] | /es ban [player] [reason] | Bans a player from receiving experience from the enderdragon.|
+| /enderspawn unban [player] | /es unban [player] | Allows a player banned from receiving experience from the enderdragon to get it again.|
+| /enderspawn lookup	[player] | /es lookup [player] | Allows a player to lookup ban statuses for the plugin.|
+| /enderspawn status <player> | /es status <player> | Allows a player to lookup their experience status for the plugin.|
+| /enderspawn reset | /es reset | Allows a player to reset experience cooldowns.|
 
 === Permissions ===
 |= Permission Node |= Effect |
 | enderspawn.* | Access to everything related to the EnderSpawn plugin.|
 | enderspawn.admin | Access to everything related to the EnderSpawn plugin.|
-| enderspawn.ban | Access to the /enderspawn ban and /enderspawn unban ~
-commands.|
+| enderspawn.ban | Access to the /enderspawn ban and /enderspawn unban commands.|
 | enderspawn.reload | Access to the /enderspawn reload command.|
 | enderspawn.lookup | Access to the /enderspawn lookup command.|
 | enderspawn.status | Access to the /enderspawn status command.|
-| enderspawn.status.other | Access to the /enderspawn status command, to look ~
-up other players.|
+| enderspawn.status.other | Access to the /enderspawn status command, to look up other players.|
 | enderspawn.exp | Access to the experience dropped by the EnderDragon.|
-| enderspawn.unlimitedexp | Access to the experience dropped by the ~
-EnderDragon, without the cooldown.|
+| enderspawn.unlimitedexp | Access to the experience dropped by the EnderDragon, without the cooldown.|
 | enderspawn.reset | Access to the /enderspawn reset command.|
