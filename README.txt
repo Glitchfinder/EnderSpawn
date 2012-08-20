@@ -4,71 +4,75 @@
   Source: https://github.com/Glitchfinder/EnderSpawn/
   Issue Tracker: https://github.com/Glitchfinder/EnderSpawn/issues/
 
-Enderspawn is a simple idea, with a fully fleshed out implementation. What if
-you want your players to battle the Ender Dragon more than once, without having
-to use a command to spawn them, and without having to regenerate the whole
-world? What if you don't want the Ender Dragon to litter or destroy the world
-that created it? What if you wanted a fairer experience distribution system, one
-that allows for all players to earn the experience if they were close enough to
-kill it?
+Enderspawn is a simple idea, with a fully fleshed out implementation.
+What if you want your players to battle the Ender Dragon more than once,
+without having to use a command to spawn them, and without having to
+regenerate the whole world? What if you don't want the Ender Dragon to
+litter or destroy the world that created it? What if you wanted a fairer
+experience distribution system, one that allows for all players to earn
+the experience if they were close enough to kill it?
 
-If those are things you've wanted, then this is the plugin for you! It allows
-for all of this, as well as significantly more!
+If those are things you've wanted, then this is the plugin for you! It
+allows for all of this, as well as significantly more!
 
 == Features ==
 
-  • Prevents Ender Dragons from destroying blocks. (Can be toggled)
+  * Prevents Ender Dragons from destroying blocks. (Can be toggled)
 
-  • Prevents Ender Dragons from spawning a portal. (Can be toggled)
+  * Prevents Ender Dragons from spawning a portal. (Can be toggled)
 
-  • Prevents Ender Dragons from spawning an egg. (Can be toggled, will drop as
-    an item if portals are disabled)
+  * Prevents Ender Dragons from spawning an egg. (Can be toggled, will
+    drop as an item if portals are disabled)
 
-  • Creates a respawn timer for the Ender Dragon. (Set in minutes, 0-whatever,
-    per dragon)
+  * Creates a respawn timer for the Ender Dragon. (Set in minutes,
+    0-whatever, per dragon)
 
-  • Creates a cooldown timer that can prevent players from earning exp from an
-    Ender Dragon. (Set in minutes, 0-whatever, per player)
+  * Creates a cooldown timer that can prevent players from earning exp
+    from an Ender Dragon. (Set in minutes, 0-whatever, per player)
 
-  • Sets a cap on the number of Ender Dragons spawned at any given time by this
-    plugin. (Per world, 0-whatever)
+  * Sets a cap on the number of Ender Dragons spawned at any given time
+    by this plugin. (Per world, 0-whatever)
 
-  • Sets a distance from the enderdragon within which players will earn the full
-    amount of experience (Calculated in 3D, all players within sphere earn full
-    normal Ender Dragon exp, which takes them from level 0 to level 105)
+  * Sets a distance from the enderdragon within which players will earn
+    the full amount of experience (Calculated in 3D, all players within
+    sphere earn full normal Ender Dragon exp, which takes them from
+    level 0 to level 105)
 
-  • Sets a configurable amount of experience to earn from the EnderDragon, which
-    defaults to the ingame default.
+  * Sets a configurable amount of experience to earn from the
+    EnderDragon, which defaults to the ingame default.
 
-  • Allows admins to ban/unban players from earning exp from the Ender Dragon.
+  * Allows admins to ban/unban players from earning exp from the Ender
+    Dragon.
 
-  • Uses Bukkit permissions.
+  * Uses Bukkit permissions.
 
-  • Tracks Ender Dragon respawn time between server restarts.
+  * Tracks Ender Dragon respawn time between server restarts.
 
-  • Tracks player experience cooldown between server restarts.
+  * Tracks player experience cooldown between server restarts.
 
-  • Tracks player experience ban status between server restarts.
+  * Tracks player experience ban status between server restarts.
 
-  • Allows players with a certain permission setting to bypass the experience
-    cooldown.
+  * Allows players with a certain permission setting to bypass the
+    experience cooldown.
 
-  • Allows players to look up experience bans.
+  * Allows players to look up experience bans.
 
-  • Allows players to look up their current experience cooldown status.
+  * Allows players to look up their current experience cooldown status.
 
-  • Allows players to lookup each other's current experience cooldown status.
+  * Allows players to lookup each other's current experience cooldown
+    status.
 
-  • Allows players with a specific permission to reset cooldowns.
+  * Allows players with a specific permission to reset cooldowns.
 
-  • Displays current cooldown status upon entering the end, or logging in while
-    in the end.
+  * Displays current cooldown status upon entering the end, or logging
+    in while in the end.
 
-  • Has a fully functional reload command that loads data directly from the
-    config file, and is not broken like in a significant number of plugins.
+  * Has a fully functional reload command that loads data directly from
+    the config file, and is not broken like in a significant number of
+    plugins.
 
-  • Has almost no added overhead. This plugin basically does nothing, and even
-    plugins that look much more minor have more overhead.
+  * Has almost no added overhead. This plugin basically does nothing,
+    and even plugins that look much more minor have more overhead.
 
 == Commands ==
 
@@ -82,8 +86,8 @@ for all of this, as well as significantly more!
 
   /enderspawn unban [player]
   /es unban [player]
-    Allows a player banned from receiving experience from the enderdragon to
-    get it again.
+    Allows a player banned from receiving experience from the
+    enderdragon to get it again.
 
   /enderspawn lookup [player]
   /es lookup [player]
@@ -122,7 +126,8 @@ for all of this, as well as significantly more!
     Access to the experience dropped by the EnderDragon.
 
   enderspawn.unlimitedexp
-    Access to the experience dropped by the EnderDragon, without the cooldown.
+    Access to the experience dropped by the EnderDragon, without the
+    cooldown.
 
   enderspawn.reset
     Access to the /enderspawn reset command.
