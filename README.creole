@@ -53,9 +53,9 @@ plugins that look much more minor have more overhead.
 | /enderspawn reload | /es reload | Reloads the configuration.|
 | /enderspawn ban [player] [reason] | /es ban [player] [reason] | Bans a player from receiving experience from the enderdragon.|
 | /enderspawn unban [player] | /es unban [player] | Allows a player banned from receiving experience from the enderdragon to get it again.|
-| /enderspawn lookup	[player] | /es lookup [player] | Allows a player to lookup ban statuses for the plugin.|
+| /enderspawn lookup [player] | /es lookup [player] | Allows a player to lookup ban statuses for the plugin.|
 | /enderspawn status <player> | /es status <player> | Allows a player to lookup their experience status for the plugin.|
-| /enderspawn reset | /es reset | Allows a player to reset experience cooldowns.|
+| /enderspawn reset [player] | /es reset [player] | Allows a player to reset experience cooldowns.|
 
 === Permissions ===
 |= Permission Node |= Effect |
