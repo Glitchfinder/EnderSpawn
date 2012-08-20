@@ -50,13 +50,12 @@ public class EnderSpawn extends JavaPlugin
 
 	public void onLoad()
 	{
-		File configurationFile = new File(getDataFolder(), "config.yml");
-
 		this.log	= this.getLogger();
 		this.data	= new Data();
 		loadData();
 
 		copyConfig();
+		File configurationFile = new File(getDataFolder(), "config.yml");
 		this.config	= new Configuration(configurationFile, log, this);
 		this.listener	= new EnderSpawnListener(this);
 		this.spawner	= new Spawner(this);
@@ -274,10 +273,8 @@ public class EnderSpawn extends JavaPlugin
 		{
 			destinationFile = new File(getDataFolder(), "config.yml");
 
-			if(destinationFile.exists())
+			if(!destinationFile.createNewFile())
 				return false;
-
-			destinationFile.createNewFile();
 
 			InputStream inputStream = getClass().getResourceAsStream("/config.yml");
 			OutputStream out = new FileOutputStream(destinationFile);
@@ -293,6 +290,7 @@ public class EnderSpawn extends JavaPlugin
 		}
 		catch(Exception e)
 		{
+			log.warning("Unable to copy configuration to the plugin directory.");
 			return false;
 		}
 	}

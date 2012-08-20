@@ -86,6 +86,8 @@ public class Configuration extends YamlConfiguration
 
 	public void load()
 	{
+		boolean defaults = false;
+
 		try
 		{
 			super.load(config);
@@ -93,6 +95,7 @@ public class Configuration extends YamlConfiguration
 		catch(Exception e)
 		{
 			log.warning("Unable to load configuration, using defaults instead.");
+			defaults = true;
 		}
 
 		if(contains("Configuration"))
@@ -113,6 +116,9 @@ public class Configuration extends YamlConfiguration
 		customExp	= getInt("CustomEXPTotal",		customExp);
 
 		getWorlds();
+
+		if(defaults)
+			save();
 	}
 
 	public void loadLegacy()
