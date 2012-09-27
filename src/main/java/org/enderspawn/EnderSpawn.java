@@ -271,6 +271,9 @@ public class EnderSpawn extends JavaPlugin
 		File destinationFile;
 		try
 		{
+			if(!getDataFolder().exists())
+				getDataFolder().mkdirs();
+
 			destinationFile = new File(getDataFolder(), "config.yml");
 
 			if(!destinationFile.createNewFile())
