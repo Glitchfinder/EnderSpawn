@@ -73,8 +73,10 @@ public class EnderSpawnListener implements Listener
 	public void onChunkUnload(ChunkUnloadEvent event)
 	{
 		World world = event.getWorld();
-		if(world.getEnvironment() != World.Environment.valueOf("THE_END"))
-				return;
+		String worldName = world.getName().toUpperCase().toLowerCase();
+
+		if(!plugin.config.worlds.containsKey(worldName))
+			return;
 
 		Chunk chunk = event.getChunk();
 		Entity[] entities = chunk.getEntities();
@@ -247,8 +249,10 @@ public class EnderSpawnListener implements Listener
 	public void onPlayerChangedWorld(PlayerChangedWorldEvent event)
 	{
 		Environment environment = event.getPlayer().getWorld().getEnvironment();
+		World world = event.getPlayer().getWorld();
+		String worldName = world.getName().toUpperCase().toLowerCase();
 
-		if(environment != World.Environment.valueOf("THE_END"))
+		if(!plugin.config.worlds.containsKey(worldName))
 			return;
 
 		plugin.spawner.start();
@@ -259,8 +263,10 @@ public class EnderSpawnListener implements Listener
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
 		Environment environment = event.getPlayer().getWorld().getEnvironment();
+		World world = event.getPlayer().getWorld();
+		String worldName = world.getName().toUpperCase().toLowerCase();
 
-		if(environment != World.Environment.valueOf("THE_END"))
+		if(!plugin.config.worlds.containsKey(worldName))
 			return;
 
 		plugin.spawner.start();

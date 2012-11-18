@@ -19,11 +19,12 @@ package org.enderspawn;
 
 //* IMPORTS: JDK/JRE
 	import java.io.Serializable;
+	import java.lang.Integer;
 	import java.lang.String;
 	import java.sql.Timestamp;
 	import java.util.HashMap;
 //* IMPORTS: BUKKIT
-	//* NOT NEEDED
+	import org.bukkit.entity.EnderDragon;
 //* IMPORTS: SPOUT
 	//* NOT NEEDED
 //* IMPORTS: OTHER
@@ -31,14 +32,22 @@ package org.enderspawn;
 
 public class Data implements Serializable
 {
-	public	HashMap<String,	Timestamp>	players;
-	public	HashMap<String,	String>		bannedPlayers;
-	public	HashMap<String,	Timestamp>	lastDeath;
+	public HashMap<String, Timestamp>			players;
+	public HashMap<String, String>				bannedPlayers;
+	public HashMap<String, Timestamp>			lastDeath;
+	public HashMap<String, HashMap<Integer, Integer>>	currentHealth;
+	public HashMap<String, HashMap<Integer, Integer>>	hitCount;
+	public HashMap<String, HashMap<Integer, HashMap<String, Integer>>>	damage;
+	public transient HashMap<String, HashMap<EnderDragon, Integer>>		dragons;
 
 	public Data()
 	{
 		players		= new HashMap<String, Timestamp>();
 		bannedPlayers	= new HashMap<String, String>();
 		lastDeath	= new HashMap<String, Timestamp>();
+		currentHealth	= new HashMap<String, HashMap<Integer, Integer>>();
+		hitCount	= new HashMap<String, HashMap<Integer, Integer>>();
+		damage		= new HashMap<String, HashMap<Integer, HashMap<String, Integer>>>();
+		dragons		= new HashMap<String, HashMap<EnderDragon, Integer>>();
 	}
 }

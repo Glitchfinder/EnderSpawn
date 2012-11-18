@@ -54,9 +54,10 @@ public class EnderSpawn extends JavaPlugin
 		this.data	= new Data();
 		loadData();
 
-		copyConfig();
+		copyConfig("config.yml");
 		File configurationFile = new File(getDataFolder(), "config.yml");
 		this.config	= new Configuration(configurationFile, log, this);
+
 		this.listener	= new EnderSpawnListener(this);
 		this.spawner	= new Spawner(this);
 		this.command	= new EnderSpawnCommand(this);
@@ -64,27 +65,27 @@ public class EnderSpawn extends JavaPlugin
 
 	public void onEnable()
 	{
-		config.load();
-		listener.register();
-		spawner.start();
+		this.config.load();
+		this.listener.register();
+		this.spawner.start();
 
 		getCommand("enderspawn").setExecutor(command);
 	}
 	
 	public void onDisable()
 	{
-		spawner.stop();
+		this.spawner.stop();
 		saveData(false);
 	}
 
 	public void reload()
 	{
-		spawner.stop();
+		this.spawner.stop();
 		saveData(false);
-		config.load();
-		spawner.start();
+		this.config.load();
+		this.spawner.start();
 
-		log.info(getDescription().getVersion() + " reloaded.");
+		this.log.info(getDescription().getVersion() + " reloaded.");
 	}
 
 	public boolean hasPermission(CommandSender sender, String perm)
@@ -236,7 +237,7 @@ public class EnderSpawn extends JavaPlugin
 		}
 		catch(Exception e)
 		{
-			log.info("Unable to read the data file. It may be corrupt.");
+			this.log.info("Unable to read the data file. It may be corrupt.");
 		}
 
 		saveData();
@@ -254,8 +255,10 @@ public class EnderSpawn extends JavaPlugin
 			if(silent)
 				return;
 
-			log.info("Successfully saved all data.");
-		} catch (Exception e) {
+			this.log.info("Successfully saved all data.");
+		}
+		catch (Exception e)
+		{
 			log.info("Unable to save the data file. It may be corrupt.");
 		}
 	}
@@ -265,7 +268,7 @@ public class EnderSpawn extends JavaPlugin
 		this.saveData(true);
 	}
 
-	public boolean copyConfig()
+	public boolean copyConfig(String filename)
 	{
 		File sourceFile;
 		File destinationFile;
@@ -274,12 +277,12 @@ public class EnderSpawn extends JavaPlugin
 			if(!getDataFolder().exists())
 				getDataFolder().mkdirs();
 
-			destinationFile = new File(getDataFolder(), "config.yml");
+			destinationFile = new File(getDataFolder(), filename);
 
 			if(!destinationFile.createNewFile())
 				return false;
 
-			InputStream inputStream = getClass().getResourceAsStream("/config.yml");
+			InputStream inputStream = getClass().getResourceAsStream("/" +  filename);
 			OutputStream out = new FileOutputStream(destinationFile);
 			byte buffer[] = new byte[1024];
 			int length;
@@ -293,7 +296,7 @@ public class EnderSpawn extends JavaPlugin
 		}
 		catch(Exception e)
 		{
-			log.warning("Unable to copy configuration to the plugin directory.");
+			log.warning("Unable to copy " + filename + " to the plugin directory.");
 			return false;
 		}
 	}
