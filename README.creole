@@ -2,8 +2,7 @@
 **[[http://ci.bitmissile.com/job/EnderSpawn/|Download]] |
 [[https://github.com/Glitchfinder/EnderSpawn|Source]] |
 [[https://github.com/Glitchfinder/EnderSpawn/issues|Issue Tracker]] |
-[[https://github.com/Glitchfinder/EnderSpawn/blob/master/src/main/resources/config.yml|Default
-Config]]**
+[[https://github.com/Glitchfinder/EnderSpawn/blob/master/src/main/resources/config.yml|Default Config]]**
 
 Enderspawn is a simple idea, with a fully fleshed out implementation. What if
 you want your players to battle the Ender Dragon more than once, without having
