@@ -1,6 +1,6 @@
 ﻿== EnderSpawn ==
 
-  Download: http://ci.bitmissile.com/job/EnderSpawn/
+  Download: http://ci.libnull.so/job/EnderSpawn/
   Source: https://github.com/Glitchfinder/EnderSpawn/
   Issue Tracker: https://github.com/Glitchfinder/EnderSpawn/issues/
 

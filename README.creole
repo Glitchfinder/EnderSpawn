@@ -1,5 +1,5 @@
 == EnderSpawn ==
-**[[http://ci.bitmissile.com/job/EnderSpawn/|Download]] |
+**[[http://ci.libnull.so/job/EnderSpawn/|Download]] |
 [[https://github.com/Glitchfinder/EnderSpawn|Source]] |
 [[https://github.com/Glitchfinder/EnderSpawn/issues|Issue Tracker]] |
 [[https://github.com/Glitchfinder/EnderSpawn/blob/master/src/main/resources/config.yml|Default Config]]**
