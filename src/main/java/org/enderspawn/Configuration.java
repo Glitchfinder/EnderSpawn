@@ -33,8 +33,7 @@ package org.enderspawn;
 //* IMPORTS: OTHER
 	//* NOT NEEDED
 
-public class Configuration extends YamlConfiguration
-{
+public class Configuration extends YamlConfiguration {
 	private	File config;
 	private Logger log;
 	private EnderSpawn plugin;
@@ -55,8 +54,7 @@ public class Configuration extends YamlConfiguration
 	public	long	expMaxDistance;
 	public	int	customExp;
 
-	public Configuration(File config, Logger log, EnderSpawn plugin)
-	{
+	public Configuration(File config, Logger log, EnderSpawn plugin) {
 		this.config	= config;
 		this.log	= log;
 		this.plugin	= plugin;
@@ -78,22 +76,18 @@ public class Configuration extends YamlConfiguration
 		customExp	= 20000;
 	}
 
-	public void load()
-	{
+	public void load() {
 		boolean defaults = false;
 
-		try
-		{
+		try {
 			super.load(config);
 		}
-		catch(Exception e)
-		{
+		catch (Exception e) {
 			log.warning("Unable to load configuration, using defaults instead.");
 			defaults = true;
 		}
 
-		if(contains("Configuration"))
-		{
+		if (contains("Configuration")) {
 			loadLegacy();
 			return;
 		}
@@ -111,12 +105,11 @@ public class Configuration extends YamlConfiguration
 
 		getWorlds();
 
-		if(defaults)
+		if (defaults)
 			save();
 	}
 
-	public void loadLegacy()
-	{
+	public void loadLegacy() {
 		log.info("Converting configuration to the current format.");
 		destroyBlocks	= getBoolean("Configuration.DestroyBlocks",	destroyBlocks);
 		spawnEgg	= getBoolean("Configuration.SpawnEgg",		spawnEgg);
@@ -135,8 +128,7 @@ public class Configuration extends YamlConfiguration
 		save();
 	}
 
-	public void save()
-	{
+	public void save() {
 		YamlConfiguration newConfig = new YamlConfiguration();
 
 		newConfig.set("DestroyBlocks",		destroyBlocks);
@@ -152,21 +144,20 @@ public class Configuration extends YamlConfiguration
 
 		ConfigurationSection worldSection = newConfig.createSection("Worlds");
 
-		for(String key : worlds.keySet())
-		{
-			if(key == null)
+		for (String key : worlds.keySet()) {
+			if (key == null)
 				continue;
 
-			if(!worlds.containsKey(key))
+			if (!worlds.containsKey(key))
 				continue;
 
-			if(!xCoords.containsKey(key))
+			if (!xCoords.containsKey(key))
 				continue;
 
-			if(!yCoords.containsKey(key))
+			if (!yCoords.containsKey(key))
 				continue;
 
-			if(!zCoords.containsKey(key))
+			if (!zCoords.containsKey(key))
 				continue;
 
 			ConfigurationSection world = worldSection.createSection(key);
@@ -180,76 +171,70 @@ public class Configuration extends YamlConfiguration
 
 		File configurationFile = new File(plugin.getDataFolder(), "config.yml");
 
-		try
-		{
+		try {
 			newConfig.save(configurationFile);
 		}
-		catch(Exception e)
-		{
+		catch (Exception e) {
 			log.warning("Unable to save configuration.");
 		}
 	}
 
-	public void getPlayers()
-	{
+	public void getPlayers() {
 		Timestamp currentTime = new Timestamp(new Date().getTime());
 		ConfigurationSection playerSection = getConfigurationSection("Players");
 
-		if(playerSection == null)
+		if (playerSection == null)
 			return;
 
 		Map<String, Object> playerValues = playerSection.getValues(false);
 
-		if(playerValues.isEmpty())
+		if (playerValues.isEmpty())
 			return;
 
-		for(Object key : playerValues.keySet())
-		{
-			if(!(key instanceof String))
+		for (Object key : playerValues.keySet()) {
+			if (!(key instanceof String))
 				continue;
 
 			String player = (String) key;
-			if(!playerValues.containsKey(player))
+			if (!playerValues.containsKey(player))
 				continue;
 
 			Object tempLong = playerValues.get(player);
-			if(!(tempLong instanceof Long))
+			if (!(tempLong instanceof Long))
 				continue;
 
 			Timestamp time = new Timestamp((Long) tempLong);
 			player = player.toUpperCase().toLowerCase();
 
-			if(currentTime.getTime() >= (time.getTime() + (expResetMinutes * 60000)))
+			if (currentTime.getTime() >= (time.getTime() + (expResetMinutes * 60000)))
 				continue;
 
 			this.plugin.data.players.put(player, time);
 		}
 	}
 
-	public void getBannedPlayers()
-	{
+	public void getBannedPlayers() {
 		String name = "BannedPlayers";
 		ConfigurationSection playerSection = getConfigurationSection(name);
 
-		if(playerSection == null)
+		if (playerSection == null)
 			return;
 
 		Map<String, Object> playerValues = playerSection.getValues(false);
 
-		if(playerValues.isEmpty())
+		if (playerValues.isEmpty())
 			return;
 
-		for(Object key : playerValues.keySet())
-		{
-			if(!(key instanceof String))
+		for (Object key : playerValues.keySet()) {
+			if (!(key instanceof String))
 				continue;
 
 			String player = (String) key;
-			if(!playerValues.containsKey(player))
+			if (!playerValues.containsKey(player))
 				continue;
 
 			Object tempString = playerValues.get(player);
-			if(!(tempString instanceof String))
+			if (!(tempString instanceof String))
 				continue;
 
 			String banReason = (String) tempString;
@@ -259,30 +244,28 @@ public class Configuration extends YamlConfiguration
 		}
 	}
 
-	public void getWorlds()
-	{
+	public void getWorlds() {
 		ConfigurationSection worldSection = getConfigurationSection("Worlds");
 
-		if(worldSection == null)
+		if (worldSection == null)
 			return;
 
 		Map<String, Object> worldValues = worldSection.getValues(false);
 
-		if(worldValues.isEmpty())
+		if (worldValues.isEmpty())
 			return;
 
-		for(Object key : worldValues.keySet())
-		{
-			if(!(key instanceof String))
+		for (Object key : worldValues.keySet()) {
+			if (!(key instanceof String))
 				continue;
 
 			String world	= (String) key;
 			String name	= world.toUpperCase().toLowerCase();
-			if(!worldValues.containsKey(world))
+			if (!worldValues.containsKey(world))
 				continue;
 
 			Object tempObject = worldValues.get(world);
-			if(!(tempObject instanceof ConfigurationSection))
+			if (!(tempObject instanceof ConfigurationSection))
 				continue;
 
 			ConfigurationSection section = (ConfigurationSection) tempObject;
@@ -294,13 +277,11 @@ public class Configuration extends YamlConfiguration
 		}
 	}
 
-	public void addWorlds()
-	{
+	public void addWorlds() {
 	
 		List<World> worldList = plugin.getServer().getWorlds();
-		for (World world : worldList)
-		{
-			if(world.getEnvironment() != World.Environment.valueOf("THE_END"))
+		for (World world : worldList) {
+			if (world.getEnvironment() != World.Environment.valueOf("THE_END"))
 				continue;
 
 			String name = world.getName().toUpperCase().toLowerCase();

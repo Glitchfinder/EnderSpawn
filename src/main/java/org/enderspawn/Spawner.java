@@ -33,47 +33,42 @@ package org.enderspawn;
 //* IMPORTS: OTHER
 	//* NOT NEEDED
 
-public class Spawner implements Runnable
-{
+public class Spawner implements Runnable {
 	private EnderSpawn plugin;
 	private int taskID;
 
-	public Spawner(EnderSpawn plugin)
-	{
+	public Spawner(EnderSpawn plugin) {
 		this.plugin = plugin;
 		taskID = -1;
 	}
 
-	public void start()
-	{
-		if(taskID >= 0)
+	public void start() {
+		if (taskID >= 0)
 			return;
 
 		Timestamp currentTime 	= new Timestamp(new Date().getTime());
 		Timestamp lastDeath	= new Timestamp(currentTime.getTime());
 
-		for(String key : this.plugin.data.lastDeath.keySet())
-		{
-			if(!this.plugin.data.lastDeath.containsKey(key))
+		for (String key : this.plugin.data.lastDeath.keySet()) {
+			if (!this.plugin.data.lastDeath.containsKey(key))
 				continue;
 
 			Timestamp death = this.plugin.data.lastDeath.get(key);
 
-			if(death.getTime() <= 0)
+			if (death.getTime() <= 0)
 				continue;
 
-			if(death.getTime() < lastDeath.getTime())
+			if (death.getTime() < lastDeath.getTime())
 				lastDeath = death;
 		}
 
-		if(lastDeath.getTime() == currentTime.getTime())
+		if (lastDeath.getTime() == currentTime.getTime())
 			lastDeath = new Timestamp(0);
 
 		long spawnMinutes = this.plugin.config.maxSpawnMinutes;
 
 		BukkitScheduler scheduler = plugin.getServer().getScheduler();
-		if(currentTime.getTime() >= (lastDeath.getTime() + (spawnMinutes * 60000)))
-		{
+		if (currentTime.getTime() >= (lastDeath.getTime() + (spawnMinutes * 60000))) {
 			taskID = scheduler.scheduleSyncDelayedTask(plugin, this, 200);
 			return;
 		}
@@ -89,42 +84,39 @@ public class Spawner implements Runnable
 		long ticksRemaining = ((new Random()).nextLong() % tickDifference);
 		ticksRemaining += minTicksRemaining;
 
-		if(ticksRemaining < 200)
+		if (ticksRemaining < 200)
 			ticksRemaining = 200;
 
 		taskID = scheduler.scheduleSyncDelayedTask(plugin, this, ticksRemaining);
 	}
 
-	public void stop()
-	{
-		if(taskID < 0)
+	public void stop() {
+		if (taskID < 0)
 			return;
 
 		plugin.getServer().getScheduler().cancelTask(taskID);
 		taskID = -1;
 	}
 
-	public void run()
-	{
+	public void run() {
 		List<World> worlds = plugin.getServer().getWorlds();
 
-		for (World world : worlds)
-		{
+		for (World world : worlds) {
 			String worldName = world.getName().toUpperCase().toLowerCase();
-			if(!plugin.config.worlds.containsKey(worldName))
+			if (!plugin.config.worlds.containsKey(worldName))
 				continue;
 
-			if(!plugin.config.xCoords.containsKey(worldName))
+			if (!plugin.config.xCoords.containsKey(worldName))
 				continue;
 
-			if(!plugin.config.yCoords.containsKey(worldName))
+			if (!plugin.config.yCoords.containsKey(worldName))
 				continue;
 
-			if(!plugin.config.zCoords.containsKey(worldName))
+			if (!plugin.config.zCoords.containsKey(worldName))
 				continue;
 
 			List<Player> players = new ArrayList(world.getPlayers());
-			if(players.size() <= 0)
+			if (players.size() <= 0)
 				continue;
 
 			boolean nearbyPlayer = false;
@@ -134,44 +126,43 @@ public class Spawner implements Runnable
 			int spawnZ = plugin.config.zCoords.get(worldName);
 
 			Location location = new Location(world, spawnX, spawnY, spawnZ);
-			for(Player player : players)
-			{
+
+			for (Player player : players) {
 				Location playerLocation = player.getLocation();
 				int x = playerLocation.getBlockX();
 				int z = playerLocation.getBlockZ();
 				Location relativeLocation = new Location(world, x, spawnY, z);
 
-				if(location.distance(relativeLocation) > 160)
+				if (location.distance(relativeLocation) > 160)
 					continue;
 
 				nearbyPlayer = true;
 				break;
 			}
 
-			if(!nearbyPlayer)
+			if (!nearbyPlayer)
 				continue;
 
 			List dragons = new ArrayList(world.getEntitiesByClass(EnderDragon.class));
 
 			int maxDragons = plugin.config.worlds.get(worldName);
-			if(dragons.size() >= maxDragons)
+			if (dragons.size() >= maxDragons)
 				continue;
 
 			int count = 0;
 
-			if(count >= maxDragons)
+			if (count >= maxDragons)
 				continue;
 
 			Timestamp currentTime 	= new Timestamp(new Date().getTime());
 			Timestamp lastDeath	= new Timestamp(0);
 
-			if(this.plugin.data.lastDeath.containsKey(worldName))
+			if (this.plugin.data.lastDeath.containsKey(worldName))
 				lastDeath = this.plugin.data.lastDeath.get(worldName);
 
 			long spawnMinutes = this.plugin.config.minSpawnMinutes;
 
-			if(currentTime.getTime() >= (lastDeath.getTime() + (spawnMinutes * 60000)))
-			{
+			if (currentTime.getTime() >= (lastDeath.getTime() + (spawnMinutes * 60000))) {
 				world.spawnCreature(location, EntityType.ENDER_DRAGON);
 				this.plugin.data.lastDeath.put(worldName, new Timestamp(0));
 			}

@@ -47,17 +47,14 @@ package org.enderspawn;
 //* IMPORTS: OTHER
 	//* NOT NEEDED
 
-public class EnderSpawnListener implements Listener
-{
+public class EnderSpawnListener implements Listener {
 	private EnderSpawn plugin;
 
-	public EnderSpawnListener(EnderSpawn plugin)
-	{
+	public EnderSpawnListener(EnderSpawn plugin) {
 		this.plugin = plugin;
 	}
 
-	public void register()
-	{
+	public void register() {
 		PluginManager manager;
 
 		manager = plugin.getServer().getPluginManager();
@@ -65,20 +62,18 @@ public class EnderSpawnListener implements Listener
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void onChunkUnload(ChunkUnloadEvent event)
-	{
+	public void onChunkUnload(ChunkUnloadEvent event) {
 		World world = event.getWorld();
 		String worldName = world.getName().toUpperCase().toLowerCase();
 
-		if(!plugin.config.worlds.containsKey(worldName))
+		if (!plugin.config.worlds.containsKey(worldName))
 			return;
 
 		Chunk chunk = event.getChunk();
 		Entity[] entities = chunk.getEntities();
 
-		for(Entity entity : entities)
-		{
-			if(entity == null)
+		for (Entity entity : entities) {
+			if (entity == null)
 				continue;
 
 			if (!(entity instanceof EnderDragon))
@@ -93,12 +88,11 @@ public class EnderSpawnListener implements Listener
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void onDragonEggTeleport(BlockFromToEvent event)
-	{
+	public void onDragonEggTeleport(BlockFromToEvent event) {
 		if (event.getBlock().getType().getId() != 122)
 			return;
 
-		if(plugin.config.teleportEgg)
+		if (plugin.config.teleportEgg)
 			return;
 
 		event.setCancelled(true);
@@ -106,8 +100,7 @@ public class EnderSpawnListener implements Listener
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void onEntityExplode(EntityExplodeEvent event)
-	{
+	public void onEntityExplode(EntityExplodeEvent event) {
 		if (!(event.getEntity() instanceof EnderDragon))
 			return;
 
@@ -119,8 +112,7 @@ public class EnderSpawnListener implements Listener
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void onEntityCreatePortal(EntityCreatePortalEvent event)
-	{
+	public void onEntityCreatePortal(EntityCreatePortalEvent event) {
 		Entity entity = event.getEntity();
 
 		if (!(entity instanceof EnderDragon))
@@ -128,20 +120,18 @@ public class EnderSpawnListener implements Listener
 
 		List<BlockState> blocks = new ArrayList(event.getBlocks());
 
-		for (BlockState block : event.getBlocks())
-		{
-			if(block.getType().getId() == 122 && !plugin.config.spawnEgg)
+		for (BlockState block : event.getBlocks()) {
+			if (block.getType().getId() == 122 && !plugin.config.spawnEgg)
 				blocks.remove(block);
 
-			if(plugin.config.spawnPortal)
+			if (plugin.config.spawnPortal)
 				continue;
 
-			if(block.getType().getId() == 7 || block.getType().getId() == 119)
+			if (block.getType().getId() == 7 || block.getType().getId() == 119)
 				blocks.remove(block);
-			else if(block.getType().getId() == 0 || block.getType().getId() == 50)
+			else if (block.getType().getId() == 0 || block.getType().getId() == 50)
 				blocks.remove(block);
-			else if(block.getType().getId() == 122 && plugin.config.spawnEgg)
-			{
+			else if (block.getType().getId() == 122 && plugin.config.spawnEgg) {
 				blocks.remove(block);
 
 				Location location = entity.getLocation();
@@ -151,8 +141,7 @@ public class EnderSpawnListener implements Listener
 			}
 		}
 
-		if(blocks.size() != event.getBlocks().size())
-		{
+		if (blocks.size() != event.getBlocks().size()) {
 			event.setCancelled(true);
 
 			LivingEntity newEntity = (LivingEntity) entity;
@@ -166,8 +155,7 @@ public class EnderSpawnListener implements Listener
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void onEntityDeath(EntityDeathEvent event)
-	{
+	public void onEntityDeath(EntityDeathEvent event) {
 		Entity entity = event.getEntity();
 
 		if (!(entity instanceof EnderDragon))
@@ -176,7 +164,7 @@ public class EnderSpawnListener implements Listener
 		int droppedEXP = event.getDroppedExp();		
 		event.setDroppedExp(0);
 
-		if(droppedEXP <= 0)
+		if (droppedEXP <= 0)
 			return;
 
 		String worldName = entity.getWorld().getName().toUpperCase().toLowerCase();
@@ -184,7 +172,7 @@ public class EnderSpawnListener implements Listener
 		plugin.saveData();
 		plugin.spawner.start();
 
-		if(plugin.config.useCustomExp)
+		if (plugin.config.useCustomExp)
 			droppedEXP = plugin.config.customExp;
 
 		List<Player> players = entity.getWorld().getPlayers();
@@ -195,8 +183,7 @@ public class EnderSpawnListener implements Listener
 		double enderY = enderDragonLocation.getY();
 		double enderZ = enderDragonLocation.getZ();
 
-		for(Player player : players)
-		{
+		for (Player player : players) {
 			Location playerLocation = player.getLocation();
 
 			double playerX = playerLocation.getX();
@@ -209,12 +196,12 @@ public class EnderSpawnListener implements Listener
 
 			double distance = Math.sqrt(squareX + squareY + squareZ);
 
-			if(distance > plugin.config.expMaxDistance)
+			if (distance > plugin.config.expMaxDistance)
 				continue;
 
 			String playerName = player.getName().toUpperCase().toLowerCase();
 
-			if(plugin.data.bannedPlayers.containsKey(playerName))
+			if (plugin.data.bannedPlayers.containsKey(playerName))
 				continue;
 
 			Timestamp time = plugin.data.players.get(playerName);
@@ -222,15 +209,15 @@ public class EnderSpawnListener implements Listener
 			long requiredTime = new Date().getTime();
 			requiredTime -= plugin.config.expResetMinutes * 60000;
 
-			if(time != null && (time.getTime() > requiredTime))
+			if (time != null && (time.getTime() > requiredTime))
 				continue;
 
-			if(!(plugin.hasPermission(player, "enderspawn.exp", false)))
+			if (!(plugin.hasPermission(player, "enderspawn.exp", false)))
 				continue;
 
 			player.giveExp(droppedEXP);
 
-			if(plugin.hasPermission(player, "enderspawn.unlimitedexp", false))
+			if (plugin.hasPermission(player, "enderspawn.unlimitedexp", false))
 				continue;
 
 			Timestamp now = new Timestamp(new Date().getTime());
@@ -241,12 +228,11 @@ public class EnderSpawnListener implements Listener
 	}
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void onPlayerChangedWorld(PlayerChangedWorldEvent event)
-	{
+	public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
 		World world = event.getPlayer().getWorld();
 		String worldName = world.getName().toUpperCase().toLowerCase();
 
-		if(!plugin.config.worlds.containsKey(worldName))
+		if (!plugin.config.worlds.containsKey(worldName))
 			return;
 
 		plugin.spawner.start();
@@ -254,12 +240,11 @@ public class EnderSpawnListener implements Listener
 	}
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void onPlayerJoin(PlayerJoinEvent event)
-	{
+	public void onPlayerJoin(PlayerJoinEvent event) {
 		World world = event.getPlayer().getWorld();
 		String worldName = world.getName().toUpperCase().toLowerCase();
 
-		if(!plugin.config.worlds.containsKey(worldName))
+		if (!plugin.config.worlds.containsKey(worldName))
 			return;
 
 		plugin.spawner.start();

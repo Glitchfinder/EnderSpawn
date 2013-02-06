@@ -26,8 +26,7 @@ package org.enderspawn;
 //* IMPORTS: OTHER
 	//* NOT NEEDED
 
-public class Message
-{
+public class Message {
 	/**
 	 * Send an INFO message to a CommandSender.  This method is the
 	 * same as calling Message.toSender() but, let's keep the INFO,
@@ -37,8 +36,7 @@ public class Message
 	 * @param format  A format string
 	 * @param args    Arguments corresponding to @param format
 	 **/
-	public static void info(CommandSender sender, String format, Object ... args)
-	{
+	public static void info(CommandSender sender, String format, Object ... args) {
 		toSender(sender, format, args);
 	}
 
@@ -51,9 +49,8 @@ public class Message
 	 * @param format  A format string
 	 * @param args    Arguments corresponding to @param format
 	 **/
-	public static void warning(CommandSender sender, String format, Object ... args)
-	{
-		if(sender instanceof Player)
+	public static void warning(CommandSender sender, String format, Object ... args) {
+		if (sender instanceof Player)
 			format = ChatColor.YELLOW + format;
 
 		toSender(sender, format, args);
@@ -68,9 +65,8 @@ public class Message
 	 * @param format  A format string
 	 * @param args    Arguments corresponding to @param format
 	 **/
-	public static void severe(CommandSender sender, String format, Object ... args)
-	{
-		if(sender instanceof Player)
+	public static void severe(CommandSender sender, String format, Object ... args) {
+		if (sender instanceof Player)
 			format = ChatColor.RED + format;
 
 		toSender(sender, format, args);
@@ -85,11 +81,10 @@ public class Message
 	 * @param format  A format string
 	 * @param args    Arguments corresponding to @param format
 	 **/
-	public static void toSender(CommandSender sender, String format, Object ... args)
-	{
+	public static void toSender(CommandSender sender, String format, Object ... args) {
 		String msg = String.format(format, args);
 
-		if(sender instanceof Player) {
+		if (sender instanceof Player) {
 			msg = String.format("%s[%s]%s %s", ChatColor.DARK_AQUA,
 			EnderSpawn.pluginName, ChatColor.WHITE, msg);
 		} else {

@@ -27,8 +27,7 @@ package org.enderspawn;
 //* IMPORTS: OTHER
 	//* NOT NEEDED
 
-public class Data implements Serializable
-{
+public class Data implements Serializable {
 	public Map<String, Timestamp>			players;
 	public Map<String, String>			bannedPlayers;
 	public Map<String, Timestamp>			lastDeath;
@@ -37,8 +36,7 @@ public class Data implements Serializable
 	public Map<String, Map<Integer, Map<String, Integer>>>	damage;
 	public transient Map<String, Map<EnderDragon, Integer>>	dragons;
 
-	public Data()
-	{
+	public Data() {
 		players		= new HashMap<String, Timestamp>();
 		bannedPlayers	= new HashMap<String, String>();
 		lastDeath	= new HashMap<String, Timestamp>();
