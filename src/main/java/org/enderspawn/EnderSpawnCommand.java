@@ -63,9 +63,6 @@ public class EnderSpawnCommand implements CommandExecutor {
 		if (!(plugin.hasPermission(sender, "enderspawn.reload")))
 			return true;
 
-		if (sender instanceof Player)
-			plugin.log.info(((Player)sender).getName() + ": /enderspawn reload");
-
 		plugin.reload();
 		Message.info(sender, "EnderSpawn was successfully reloaded.");
 
@@ -87,11 +84,6 @@ public class EnderSpawnCommand implements CommandExecutor {
 			}
 		}
 
-		if (sender instanceof Player) {
-			String message = ((Player)sender).getName() + ": /enderspawn ban ";
-			plugin.log.info(message + args[1] + " " + reason);
-		}
-
 		String player = args[1].toUpperCase().toLowerCase();
 		plugin.data.bannedPlayers.put(player, reason);
 		plugin.saveData();
@@ -111,11 +103,6 @@ public class EnderSpawnCommand implements CommandExecutor {
 		if (args.length < 2)
 			return false;
 
-		if (sender instanceof Player) {
-			String message = ((Player)sender).getName() + ": /enderspawn unban ";
-			plugin.log.info(message + args[1]);
-		}
-
 		String player = args[1].toUpperCase().toLowerCase();
 		plugin.data.bannedPlayers.remove(player);
 		plugin.saveData();
@@ -133,11 +120,6 @@ public class EnderSpawnCommand implements CommandExecutor {
 
 		if (args.length < 2)
 			return false;
-
-		if (sender instanceof Player) {
-			String message = ((Player)sender).getName() + ": /enderspawn lookup ";
-			plugin.log.info(message + args[1]);
-		}
 
 		String player = args[1].toUpperCase().toLowerCase();
 		String reason = plugin.data.bannedPlayers.get(player);
@@ -166,9 +148,6 @@ public class EnderSpawnCommand implements CommandExecutor {
 			Message.info(sender, message);
 		}
 
-		if (sender instanceof Player)
-			plugin.log.info(((Player)sender).getName() + ": /enderspawn status");
-
 		return plugin.showStatus((Player) sender, null);
 	}
 
@@ -179,11 +158,6 @@ public class EnderSpawnCommand implements CommandExecutor {
 		if (!(plugin.hasPermission(sender, "enderspawn.status.other")))
 			return true;
 
-		if (sender instanceof Player) {
-			String message = ((Player)sender).getName() + ": /enderspawn status ";
-			plugin.log.info(message + args[1]);
-		}
-
 		return plugin.showStatus((Player) sender, args[1]);
 	}
 
@@ -193,11 +167,6 @@ public class EnderSpawnCommand implements CommandExecutor {
 
 		if (args.length < 2)
 			return false;
-
-		if (sender instanceof Player) {
-			String message = ((Player)sender).getName() + ": /enderspawn reset ";
-			plugin.log.info(message + args[1]);
-		}
 
 		String player = args[1].toUpperCase().toLowerCase();
 		plugin.data.players.remove(player);
