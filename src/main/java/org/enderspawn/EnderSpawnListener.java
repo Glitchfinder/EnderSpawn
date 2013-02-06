@@ -195,15 +195,7 @@ public class EnderSpawnListener implements Listener {
 		for (Player player : players) {
 			Location playerLocation = player.getLocation();
 
-			double playerX = playerLocation.getX();
-			double playerY = playerLocation.getY();
-			double playerZ = playerLocation.getZ();
-
-			double squareX = Math.pow((enderX - playerX), 2);
-			double squareY = Math.pow((enderY - playerY), 2);
-			double squareZ = Math.pow((enderZ - playerZ), 2);
-
-			double distance = Math.sqrt(squareX + squareY + squareZ);
+			int distance = (int) enderDragonLocation.distance(playerLocation);
 
 			if (distance > plugin.config.expMaxDistance)
 				continue;
