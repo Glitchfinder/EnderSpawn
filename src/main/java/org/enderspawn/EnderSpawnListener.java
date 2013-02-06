@@ -23,6 +23,7 @@ package org.enderspawn;
 	import java.util.Date;
 	import java.util.List;
 //* IMPORTS: BUKKIT
+	import org.bukkit.block.Block;
 	import org.bukkit.block.BlockState;
 	import org.bukkit.Chunk;
 	import org.bukkit.entity.EnderDragon;
@@ -150,6 +151,14 @@ public class EnderSpawnListener implements Listener {
 			newEvent = new EntityCreatePortalEvent(newEntity, blocks, type);
 
 			plugin.getServer().getPluginManager().callEvent(newEvent);
+
+			if (!newEvent.isCancelled()) {
+				for(BlockState blockState : blocks) {
+					int id		= blockState.getTypeId();
+					byte data	= blockState.getRawData();
+					blockState.getBlock().setTypeIdAndData(id, data, false);
+				}
+			}
 		}
 		return;
 	}
