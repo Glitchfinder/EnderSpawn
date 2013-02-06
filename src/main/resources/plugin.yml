@@ -1,5 +1,5 @@
 name: EnderSpawn
-version: ${project.version}-b${BUILD_NUMBER}
+version: ${project.version}
 description: >
   This plugin adds a dynamic control system for the Enderdragon in The End.
 author: Glitchfinder 
