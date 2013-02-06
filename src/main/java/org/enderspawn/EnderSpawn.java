@@ -217,7 +217,9 @@ public class EnderSpawn extends JavaPlugin
 
 	public void loadData()
 	{
-		File dataFile;
+		File dataFile		= null;
+		FileInputStream fis	= null;
+		ObjectInputStream in	= null;
 
 		try
 		{
@@ -226,15 +228,34 @@ public class EnderSpawn extends JavaPlugin
 			if(!dataFile.exists())
 				return;
 
-			FileInputStream fis = new FileInputStream(dataFile);
-			ObjectInputStream in = new ObjectInputStream(fis);
-			data = (Data) in.readObject();
-			in.close();
+			fis	= new FileInputStream(dataFile);
+			in	= new ObjectInputStream(fis);
+			data	= (Data) in.readObject();
 			log.info("Successfully loaded all data.");
 		}
 		catch(Exception e)
 		{
 			this.log.info("Unable to read the data file. It may be corrupt.");
+		}
+		finally
+		{
+			if(fis != null)
+			{
+				try
+				{
+					fis.close();
+				}
+				catch(Exception e) {}
+			}
+
+			if(in != null)
+			{
+				try
+				{
+					in.close();
+				}
+				catch(Exception e) {}
+			}
 		}
 
 		saveData();
@@ -242,12 +263,15 @@ public class EnderSpawn extends JavaPlugin
 
 	public void saveData(boolean silent)
 	{
+		File dataFile		= null;
+		FileOutputStream fos	= null;
+		ObjectOutputStream out	= null;
+
 		try {
-			File dataFile = new File(getDataFolder(), "Data.bin");
-			FileOutputStream fos = new FileOutputStream(dataFile);
-			ObjectOutputStream out = new ObjectOutputStream(fos);
+			dataFile	= new File(getDataFolder(), "Data.bin");
+			fos		= new FileOutputStream(dataFile);
+			out		= new ObjectOutputStream(fos);
 			out.writeObject(data);
-			out.close();
 
 			if(silent)
 				return;
@@ -258,6 +282,26 @@ public class EnderSpawn extends JavaPlugin
 		{
 			log.info("Unable to save the data file. It may be corrupt.");
 		}
+		finally
+		{
+			if(fos != null)
+			{
+				try
+				{
+					fos.close();
+				}
+				catch(Exception e) {}
+			}
+
+			if(out != null)
+			{
+				try
+				{
+					out.close();
+				}
+				catch(Exception e) {}
+			}
+		}
 	}
 
 	public void saveData()
@@ -267,8 +311,11 @@ public class EnderSpawn extends JavaPlugin
 
 	public boolean copyConfig(String filename)
 	{
-		File sourceFile;
-		File destinationFile;
+		File sourceFile		= null;
+		File destinationFile	= null;
+		InputStream is		= null;
+		OutputStream out	= null;
+
 		try
 		{
 			if(!getDataFolder().exists())
@@ -279,22 +326,40 @@ public class EnderSpawn extends JavaPlugin
 			if(!destinationFile.createNewFile())
 				return false;
 
-			InputStream inputStream = getClass().getResourceAsStream("/" +  filename);
-			OutputStream out = new FileOutputStream(destinationFile);
-			byte buffer[] = new byte[1024];
+			is		= getClass().getResourceAsStream("/" +  filename);
+			out		= new FileOutputStream(destinationFile);
+			byte buffer[]	= new byte[1024];
 			int length;
 
-			while((length = inputStream.read(buffer)) > 0)
+			while((length = is.read(buffer)) > 0)
 				out.write(buffer, 0, length);
 
-			out.close();
-			inputStream.close();
 			return true;
 		}
 		catch(Exception e)
 		{
 			log.warning("Unable to copy " + filename + " to the plugin directory.");
 			return false;
+		}
+		finally
+		{
+			if(is != null)
+			{
+				try
+				{
+					is.close();
+				}
+				catch(Exception e) {}
+			}
+
+			if(out != null)
+			{
+				try
+				{
+					out.close();
+				}
+				catch(Exception e) {}
+			}
 		}
 	}
 }
