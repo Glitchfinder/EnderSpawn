@@ -19,23 +19,17 @@ package org.enderspawn;
 
 //* IMPORTS: JDK/JRE
 	import java.io.File;
-	import java.lang.Integer;
-	import java.lang.Long;
-	import java.lang.String;
 	import java.sql.Timestamp;
 	import java.util.Date;
 	import java.util.HashMap;
 	import java.util.List;
 	import java.util.logging.Logger;
 	import java.util.Map;
-	import java.util.Set;
 //* IMPORTS: BUKKIT
 	import org.bukkit.configuration.ConfigurationSection;
 	import org.bukkit.configuration.file.YamlConfiguration;
 	import org.bukkit.World;
 	import org.bukkit.World.Environment;
-//* IMPORTS: SPOUT
-	//* NOT NEEDED
 //* IMPORTS: OTHER
 	//* NOT NEEDED
 
@@ -45,10 +39,10 @@ public class Configuration extends YamlConfiguration
 	private Logger log;
 	private EnderSpawn plugin;
 
-	public	HashMap<String, Integer>	worlds;
-	public	HashMap<String, Integer> 	xCoords;
-	public	HashMap<String, Integer> 	yCoords;
-	public	HashMap<String, Integer> 	zCoords;
+	public	Map<String, Integer>	worlds;
+	public	Map<String, Integer> 	xCoords;
+	public	Map<String, Integer> 	yCoords;
+	public	Map<String, Integer> 	zCoords;
 
 	public	boolean	destroyBlocks;
 	public	boolean	spawnEgg;

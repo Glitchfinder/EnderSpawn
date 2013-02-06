@@ -18,8 +18,6 @@
 package org.enderspawn;
 
 //* IMPORTS: JDK/JRE
-	import java.lang.Runnable;
-	import java.lang.String;
 	import java.sql.Timestamp;
 	import java.util.ArrayList;
 	import java.util.Date;
@@ -32,8 +30,6 @@ package org.enderspawn;
 	import org.bukkit.Location;
 	import org.bukkit.scheduler.BukkitScheduler;
 	import org.bukkit.World;
-//* IMPORTS: SPOUT
-	//* NOT NEEDED
 //* IMPORTS: OTHER
 	//* NOT NEEDED
 

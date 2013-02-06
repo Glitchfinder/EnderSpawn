@@ -18,8 +18,6 @@
 package org.enderspawn;
 
 //* IMPORTS: JDK/JRE
-	import java.lang.Math;
-	import java.lang.String;
 	import java.sql.Timestamp;
 	import java.util.ArrayList;
 	import java.util.Date;
@@ -46,9 +44,6 @@ package org.enderspawn;
 	import org.bukkit.plugin.PluginManager;
 	import org.bukkit.PortalType;
 	import org.bukkit.World;
-	import org.bukkit.World.Environment;
-//* IMPORTS: SPOUT
-	//* NOT NEEDED
 //* IMPORTS: OTHER
 	//* NOT NEEDED
 
@@ -248,7 +243,6 @@ public class EnderSpawnListener implements Listener
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onPlayerChangedWorld(PlayerChangedWorldEvent event)
 	{
-		Environment environment = event.getPlayer().getWorld().getEnvironment();
 		World world = event.getPlayer().getWorld();
 		String worldName = world.getName().toUpperCase().toLowerCase();
 
@@ -262,7 +256,6 @@ public class EnderSpawnListener implements Listener
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
-		Environment environment = event.getPlayer().getWorld().getEnvironment();
 		World world = event.getPlayer().getWorld();
 		String worldName = world.getName().toUpperCase().toLowerCase();
 

@@ -18,14 +18,12 @@
 package org.enderspawn;
 
 //* IMPORTS: JDK/JRE
-	import java.lang.String;
+	//* NOT NEEDED
 //* IMPORTS: BUKKIT
 	import org.bukkit.command.Command;
 	import org.bukkit.command.CommandExecutor;
 	import org.bukkit.command.CommandSender;
 	import org.bukkit.entity.Player;
-//* IMPORTS: SPOUT
-	//* NOT NEEDED
 //* IMPORTS: OTHER
 	//* NOT NEEDED
 

@@ -25,15 +25,12 @@ package org.enderspawn;
 	import java.io.ObjectInputStream;
 	import java.io.ObjectOutputStream;
 	import java.io.OutputStream;
-	import java.lang.String;
 	import java.util.Date;
 //* IMPORTS: BUKKIT
 	import org.bukkit.command.CommandSender;
 	import org.bukkit.entity.Player;
 	import org.bukkit.plugin.java.JavaPlugin;
 	import java.util.logging.Logger;
-//* IMPORTS: SPOUT
-	//* NOT NEEDED
 //* IMPORTS: OTHER
 	//* NOT NEEDED
 

@@ -19,35 +19,32 @@ package org.enderspawn;
 
 //* IMPORTS: JDK/JRE
 	import java.io.Serializable;
-	import java.lang.Integer;
-	import java.lang.String;
 	import java.sql.Timestamp;
 	import java.util.HashMap;
+	import java.util.Map;
 //* IMPORTS: BUKKIT
 	import org.bukkit.entity.EnderDragon;
-//* IMPORTS: SPOUT
-	//* NOT NEEDED
 //* IMPORTS: OTHER
 	//* NOT NEEDED
 
 public class Data implements Serializable
 {
-	public HashMap<String, Timestamp>			players;
-	public HashMap<String, String>				bannedPlayers;
-	public HashMap<String, Timestamp>			lastDeath;
-	public HashMap<String, HashMap<Integer, Integer>>	currentHealth;
-	public HashMap<String, HashMap<Integer, Integer>>	hitCount;
-	public HashMap<String, HashMap<Integer, HashMap<String, Integer>>>	damage;
-	public transient HashMap<String, HashMap<EnderDragon, Integer>>		dragons;
+	public Map<String, Timestamp>			players;
+	public Map<String, String>			bannedPlayers;
+	public Map<String, Timestamp>			lastDeath;
+	public Map<String, Map<Integer, Integer>>	currentHealth;
+	public Map<String, Map<Integer, Integer>>	hitCount;
+	public Map<String, Map<Integer, Map<String, Integer>>>	damage;
+	public transient Map<String, Map<EnderDragon, Integer>>	dragons;
 
 	public Data()
 	{
 		players		= new HashMap<String, Timestamp>();
 		bannedPlayers	= new HashMap<String, String>();
 		lastDeath	= new HashMap<String, Timestamp>();
-		currentHealth	= new HashMap<String, HashMap<Integer, Integer>>();
-		hitCount	= new HashMap<String, HashMap<Integer, Integer>>();
-		damage		= new HashMap<String, HashMap<Integer, HashMap<String, Integer>>>();
-		dragons		= new HashMap<String, HashMap<EnderDragon, Integer>>();
+		currentHealth	= new HashMap<String, Map<Integer, Integer>>();
+		hitCount	= new HashMap<String, Map<Integer, Integer>>();
+		damage		= new HashMap<String, Map<Integer, Map<String, Integer>>>();
+		dragons		= new HashMap<String, Map<EnderDragon, Integer>>();
 	}
 }
