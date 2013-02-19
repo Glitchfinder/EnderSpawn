@@ -23,7 +23,7 @@ commands:
 permissions:
   enderspawn.*:
     description: >
-      Access to everything related to the EnderSpawn plugin.
+      Access to EVERYTHING related to the EnderSpawn plugin.
     children:
       enderspawn.ban: true
       enderspawn.reload: true
