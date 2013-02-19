@@ -1,3 +1,5 @@
+# Config.yml!!!
+
 # Whether or not the EnderDragon destroys blocks.
 DestroyBlocks: false
 # Whether or not the EnderDragon spawns an egg. If set to true while the portal
@@ -5,6 +7,7 @@ DestroyBlocks: false
 SpawnEgg: true
 # Whether or not the EnderDragon spawns a portal. If set to true while the egg
 # is disabled, the portal will spawn without an egg.
+#why is this even an option
 SpawnPortal: false
 # Whether or not EnderDragon eggs teleport when hit by a player. This setting is
 # to help disable creative theft, especially since LogBlock doesn't log the egg
