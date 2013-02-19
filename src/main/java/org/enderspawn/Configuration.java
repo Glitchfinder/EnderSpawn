@@ -53,8 +53,9 @@ public class Configuration extends YamlConfiguration {
 	public	long	expResetMinutes;
 	public	long	expMaxDistance;
 	public	int	customExp;
-
-	public Configuration(File config, Logger log, EnderSpawn plugin) {
+	
+	//configs should be private, don't want them to be displayed in a webpage via public
+	private Configuration(File config, Logger log, EnderSpawn plugin) {
 		this.config	= config;
 		this.log	= log;
 		this.plugin	= plugin;
@@ -95,6 +96,7 @@ public class Configuration extends YamlConfiguration {
 		destroyBlocks	= getBoolean("DestroyBlocks",		destroyBlocks);
 		spawnEgg	= getBoolean("SpawnEgg",		spawnEgg);
 		spawnPortal	= getBoolean("SpawnPortal",		spawnPortal);
+		//Eggs should not teleport but since I  don't understand what's going on, I'll leave it
 		teleportEgg	= getBoolean("EggsCanTeleport",		teleportEgg);
 		maxSpawnMinutes	= getLong("MaxRespawnMinutes",		maxSpawnMinutes);
 		minSpawnMinutes	= getLong("MinRespawnMinutes",		minSpawnMinutes);
@@ -108,8 +110,9 @@ public class Configuration extends YamlConfiguration {
 		if (defaults)
 			save();
 	}
-
-	public void loadLegacy() {
+	
+	//Should be private, again
+	private void loadLegacy() {
 		log.info("Converting configuration to the current format.");
 		destroyBlocks	= getBoolean("Configuration.DestroyBlocks",	destroyBlocks);
 		spawnEgg	= getBoolean("Configuration.SpawnEgg",		spawnEgg);
@@ -127,8 +130,9 @@ public class Configuration extends YamlConfiguration {
 		getBannedPlayers();
 		save();
 	}
-
-	public void save() {
+	
+	//PRIVATE NOT PUBLIC
+	private void save() {
 		YamlConfiguration newConfig = new YamlConfiguration();
 
 		newConfig.set("DestroyBlocks",		destroyBlocks);
@@ -178,8 +182,9 @@ public class Configuration extends YamlConfiguration {
 			log.warning("Unable to save configuration.");
 		}
 	}
-
-	public void getPlayers() {
+	
+	//PRIVATE NOT PUBLICCCC
+	private void getPlayers() {
 		Timestamp currentTime = new Timestamp(new Date().getTime());
 		ConfigurationSection playerSection = getConfigurationSection("Players");
 
@@ -212,7 +217,8 @@ public class Configuration extends YamlConfiguration {
 			this.plugin.data.players.put(player, time);
 		}
 	}
-
+	
+	//GOOD, public. Can be displayed on webpage
 	public void getBannedPlayers() {
 		String name = "BannedPlayers";
 		ConfigurationSection playerSection = getConfigurationSection(name);
@@ -243,12 +249,17 @@ public class Configuration extends YamlConfiguration {
 			this.plugin.data.bannedPlayers.put(player, banReason);
 		}
 	}
-
+	
+	
 	public void getWorlds() {
 		ConfigurationSection worldSection = getConfigurationSection("Worlds");
 
 		if (worldSection == null)
 			return;
+		
+		foreach($world as $world_name) {
+			echo '<li>' . $world name . '</li>';	
+		}	
 
 		Map<String, Object> worldValues = worldSection.getValues(false);
 
@@ -277,7 +288,8 @@ public class Configuration extends YamlConfiguration {
 		}
 	}
 
-	public void addWorlds() {
+	//Don't want users to add worlds on PUBLIC
+	private void addWorlds() {
 	
 		List<World> worldList = plugin.getServer().getWorlds();
 		for (World world : worldList) {
