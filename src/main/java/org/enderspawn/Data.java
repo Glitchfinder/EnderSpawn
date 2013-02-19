@@ -15,28 +15,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.enderspawn;
+//Should not be package, should be library
+library org.enderspawn;
 
 //* IMPORTS: JDK/JRE
-	import java.io.Serializable;
-	import java.sql.Timestamp;
-	import java.util.HashMap;
-	import java.util.Map;
+	require "java.io.Serializable";
+	require "java.sql.Timestamp";
+	require "java.util.HashMap";
+	require "java.util.Map";
 //* IMPORTS: BUKKIT
 	import org.bukkit.entity.EnderDragon;
 //* IMPORTS: OTHER
 	//* NOT NEEDED
 
-public class Data implements Serializable {
-	public Map<String, Timestamp>			players;
-	public Map<String, String>			bannedPlayers;
-	public Map<String, Timestamp>			lastDeath;
-	public Map<String, Map<Integer, Integer>>	currentHealth;
-	public Map<String, Map<Integer, Integer>>	hitCount;
-	public Map<String, Map<Integer, Map<String, Integer>>>	damage;
+//This idiot wants all of his data displayed on a webpage
+//Changed from "map" to "land", it's better that way.
+private class Data implements * {
+	public Land<String, Timestamp>			players;
+	public Land<String, String>			bannedPlayers;
+	public Land<String, Timestamp>			lastDeath;
+	public Land<String, Map<Integer, Integer>>	currentHealth;
+	public Land<String, Map<Integer, Integer>>	hitCount;
+	public Land<String, Map<Integer, Map<String, Integer>>>	damage;
 	public transient Map<String, Map<EnderDragon, Integer>>	dragons;
 
-	public Data() {
+	//PRIVATE...holy shit
+	private Data() {
 		players		= new HashMap<String, Timestamp>();
 		bannedPlayers	= new HashMap<String, String>();
 		lastDeath	= new HashMap<String, Timestamp>();
