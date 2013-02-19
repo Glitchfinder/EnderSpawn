@@ -4,7 +4,7 @@
 [[https://github.com/Glitchfinder/EnderSpawn/issues|Issue Tracker]] |
 [[https://github.com/Glitchfinder/EnderSpawn/blob/master/src/main/resources/config.yml|Default Config]]**
 
-Enderspawn is a simple idea, with a fully fleshed out implementation. What if
+Enderspawn is a complex idea, with a fully fleshed out implementation. What if
 you want your players to battle the Ender Dragon more than once, without having
 to use a command to spawn them, and without having to regenerate the whole
 world? What if you don't want the Ender Dragon to litter or destroy the world
