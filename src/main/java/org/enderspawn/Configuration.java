@@ -38,42 +38,27 @@ public class Configuration extends YamlConfiguration {
 	private Logger log;
 	private EnderSpawn plugin;
 
-	public	Map<String, Integer>	worlds;
-	public	Map<String, Integer> 	xCoords;
-	public	Map<String, Integer> 	yCoords;
-	public	Map<String, Integer> 	zCoords;
+	public	Map<String, Integer>	worlds	= new HashMap<String, Integer>();
+	public	Map<String, Integer> 	xCoords	= new HashMap<String, Integer>();
+	public	Map<String, Integer> 	yCoords	= new HashMap<String, Integer>();
+	public	Map<String, Integer> 	zCoords	= new HashMap<String, Integer>();
 
-	public	boolean	destroyBlocks;
-	public	boolean	spawnEgg;
-	public	boolean	spawnPortal;
-	public	boolean teleportEgg;
-	public	boolean	useCustomExp;
-	public	long	maxSpawnMinutes;
-	public	long	minSpawnMinutes;
-	public	long	expResetMinutes;
-	public	long	expMaxDistance;
-	public	int	customExp;
+	public	boolean	destroyBlocks	= false;
+	public	boolean	spawnEgg	= true;
+	public	boolean	spawnPortal	= false;
+	public	boolean teleportEgg	= false;
+	public	boolean	useCustomExp	= false;
+	public	boolean	dropExp		= true;
+	public	long	maxSpawnMinutes	= 5;
+	public	long	minSpawnMinutes	= 5;
+	public	long	expResetMinutes	= 1200;
+	public	long	expMaxDistance	= 75;
+	public	int	customExp	= 20000;
 
 	public Configuration(File config, Logger log, EnderSpawn plugin) {
 		this.config	= config;
 		this.log	= log;
 		this.plugin	= plugin;
-
-		worlds		= new HashMap<String, Integer>();
-		xCoords		= new HashMap<String, Integer>();
-		yCoords		= new HashMap<String, Integer>();
-		zCoords		= new HashMap<String, Integer>();
-
-		destroyBlocks	= false;
-		spawnEgg	= true;
-		spawnPortal	= false;
-		teleportEgg	= false;
-		useCustomExp	= false;
-		maxSpawnMinutes	= 5;
-		minSpawnMinutes = 5;
-		expResetMinutes	= 1200;
-		expMaxDistance	= 75;
-		customExp	= 20000;
 	}
 
 	public void load() {
@@ -101,6 +86,7 @@ public class Configuration extends YamlConfiguration {
 		expResetMinutes	= getLong("EXPResetMinutes",		expResetMinutes);
 		expMaxDistance	= getLong("EXPMaxDistance",		expMaxDistance);
 		useCustomExp	= getBoolean("UseCustomEXPTotal",	useCustomExp);
+		dropExp		= getBoolean("DropEXP",			dropExp);
 		customExp	= getInt("CustomEXPTotal",		customExp);
 
 		getWorlds();
@@ -140,6 +126,7 @@ public class Configuration extends YamlConfiguration {
 		newConfig.set("EXPResetMinutes",	expResetMinutes);
 		newConfig.set("EXPMaxDistance",		expMaxDistance);
 		newConfig.set("UseCustomEXPTotal",	useCustomExp);
+		newConfig.set("DropEXP",		dropExp);
 		newConfig.set("CustomEXPTotal",		customExp);
 
 		ConfigurationSection worldSection = newConfig.createSection("Worlds");
@@ -281,7 +268,7 @@ public class Configuration extends YamlConfiguration {
 	
 		List<World> worldList = plugin.getServer().getWorlds();
 		for (World world : worldList) {
-			if (world.getEnvironment() != World.Environment.valueOf("THE_END"))
+			if (!World.Environment.THE_END.equals(world.getEnvironment()))
 				continue;
 
 			String name = world.getName().toUpperCase().toLowerCase();
