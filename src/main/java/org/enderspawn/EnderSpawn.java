@@ -35,7 +35,7 @@ package org.enderspawn;
 	//* NOT NEEDED
 
 public class EnderSpawn extends JavaPlugin {
-	public static String pluginName = "EnderSpawn";
+	public static final String pluginName = "EnderSpawn";
 
 	public	Configuration		config;
 	public	Data			data;

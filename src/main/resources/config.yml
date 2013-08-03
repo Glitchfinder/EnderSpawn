@@ -14,6 +14,8 @@ EggsCanTeleport: false
 MaxRespawnMinutes: 5
 # The minimum time it takes for a dragon to respawn.
 MinRespawnMinutes: 5
+# Whether to drop exp to ground (as in vanilla) or give it directly to players
+DropEXP: true
 # The time it takes for a player who has received experience from the
 # EnderDragon to be able to receive more.
 EXPResetMinutes: 1200
