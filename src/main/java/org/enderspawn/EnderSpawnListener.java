@@ -170,23 +170,22 @@ public class EnderSpawnListener implements Listener {
 		if (!(entity instanceof EnderDragon))
 			return;
 
-		if (plugin.config.dropExp) {
-			if (plugin.config.useCustomExp) {
-				event.setDroppedExp(plugin.config.customExp);
-			};
-			return;
-		};
-
-		int droppedEXP = 0;
-		if (plugin.config.useCustomExp) {
-			droppedEXP = plugin.config.customExp;
-		} else {
-			droppedEXP = event.getDroppedExp();
-		};
-		event.setDroppedExp(0);
+		int droppedEXP = event.getDroppedExp();
 
 		if (droppedEXP <= 0)
 			return;
+
+		if (plugin.config.dropExp) {
+			if (plugin.config.useCustomExp)
+				event.setDroppedExp(plugin.config.customExp);
+
+			return;
+		}
+
+		if (plugin.config.useCustomExp)
+			droppedEXP = plugin.config.customExp;
+
+		event.setDroppedExp(0);
 
 		String worldName = entity.getWorld().getName().toUpperCase().toLowerCase();
 		plugin.data.lastDeath.put(worldName, new Timestamp(new Date().getTime()));

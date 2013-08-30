@@ -48,7 +48,7 @@ public class Configuration extends YamlConfiguration {
 	public	boolean	spawnPortal	= false;
 	public	boolean teleportEgg	= false;
 	public	boolean	useCustomExp	= false;
-	public	boolean	dropExp		= true;
+	public	boolean	dropExp		= false;
 	public	long	maxSpawnMinutes	= 5;
 	public	long	minSpawnMinutes	= 5;
 	public	long	expResetMinutes	= 1200;
