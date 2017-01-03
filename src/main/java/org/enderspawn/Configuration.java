@@ -18,20 +18,18 @@
 package org.enderspawn;
 
 //* IMPORTS: JDK/JRE
-	import java.io.File;
-	import java.sql.Timestamp;
-	import java.util.Date;
-	import java.util.HashMap;
-	import java.util.List;
-	import java.util.logging.Logger;
-	import java.util.Map;
+import java.io.File;
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.logging.Logger;
 //* IMPORTS: BUKKIT
-	import org.bukkit.configuration.ConfigurationSection;
-	import org.bukkit.configuration.file.YamlConfiguration;
-	import org.bukkit.World;
-	import org.bukkit.World.Environment;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.World;
 //* IMPORTS: OTHER
-	//* NOT NEEDED
+//* NOT NEEDED
 
 public class Configuration extends YamlConfiguration {
 	private	File config;
@@ -42,6 +40,8 @@ public class Configuration extends YamlConfiguration {
 	public	Map<String, Integer> 	xCoords	= new HashMap<String, Integer>();
 	public	Map<String, Integer> 	yCoords	= new HashMap<String, Integer>();
 	public	Map<String, Integer> 	zCoords	= new HashMap<String, Integer>();
+
+	public List<Location> endCrystalPosition = Collections.singletonList(new Location(Bukkit.getWorld("world_the_end"), 0, 100, 0));
 
 	public	boolean	destroyBlocks	= false;
 	public	boolean	spawnEgg	= true;
@@ -72,6 +72,8 @@ public class Configuration extends YamlConfiguration {
 			defaults = true;
 		}
 
+
+
 		if (contains("Configuration")) {
 			loadLegacy();
 			return;
@@ -88,6 +90,7 @@ public class Configuration extends YamlConfiguration {
 		useCustomExp	= getBoolean("UseCustomEXPTotal",	useCustomExp);
 		dropExp		= getBoolean("DropEXP",			dropExp);
 		customExp	= getInt("CustomEXPTotal",		customExp);
+		endCrystalPosition = (List<Location>)getList("CrystalPositions", endCrystalPosition);
 
 		getWorlds();
 
@@ -107,6 +110,7 @@ public class Configuration extends YamlConfiguration {
 		expMaxDistance	= getLong("Configuration.EXPMaxDistance",	expMaxDistance);
 		useCustomExp	= getBoolean("Configuration.UseCustomEXPTotal",	useCustomExp);
 		customExp	= getInt("Configuration.CustomEXPTotal",	customExp);
+		endCrystalPosition = (List<Location>)getList("Configuration.CrystalPositions", endCrystalPosition);
 
 		addWorlds();
 		getPlayers();
@@ -116,6 +120,9 @@ public class Configuration extends YamlConfiguration {
 
 	public void save() {
 		YamlConfiguration newConfig = new YamlConfiguration();
+
+		plugin.getLogger().info(endCrystalPosition.toString());
+		newConfig.set("CrystalPositions", endCrystalPosition);
 
 		newConfig.set("DestroyBlocks",		destroyBlocks);
 		newConfig.set("SpawnEgg",		spawnEgg);
@@ -154,6 +161,8 @@ public class Configuration extends YamlConfiguration {
 			spawn.set("X", xCoords.get(key));
 			spawn.set("Y", yCoords.get(key));
 			spawn.set("Z", zCoords.get(key));
+
+
 		}
 
 		File configurationFile = new File(plugin.getDataFolder(), "config.yml");
@@ -265,7 +274,7 @@ public class Configuration extends YamlConfiguration {
 	}
 
 	public void addWorlds() {
-	
+
 		List<World> worldList = plugin.getServer().getWorlds();
 		for (World world : worldList) {
 			if (!World.Environment.THE_END.equals(world.getEnvironment()))

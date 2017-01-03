@@ -26,10 +26,7 @@ package org.enderspawn;
 	import org.bukkit.block.Block;
 	import org.bukkit.block.BlockState;
 	import org.bukkit.Chunk;
-	import org.bukkit.entity.EnderDragon;
-	import org.bukkit.entity.Entity;
-	import org.bukkit.entity.LivingEntity;
-	import org.bukkit.entity.Player;
+	import org.bukkit.entity.*;
 	import org.bukkit.event.block.BlockFromToEvent;
 	import org.bukkit.event.entity.EntityCreatePortalEvent;
 	import org.bukkit.event.entity.EntityDeathEvent;
@@ -231,6 +228,12 @@ public class EnderSpawnListener implements Listener {
 
 			Timestamp now = new Timestamp(new Date().getTime());
 			plugin.data.players.put(playerName, now);
+		}
+
+		for(Entity endCrystal: event.getEntity().getWorld().getEntities()) {
+			if(endCrystal.getType().equals(EntityType.ENDER_CRYSTAL)) {
+				endCrystal.remove();
+			}
 		}
 
 		plugin.saveData();

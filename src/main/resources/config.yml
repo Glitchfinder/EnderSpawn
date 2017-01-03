@@ -43,3 +43,12 @@ Worlds:
       X: 0
       Y: 128
       Z: 0
+# Set the Positions of Ender Crystals:
+CrystalPositions:
+- ==: org.bukkit.Location
+  world: world_the_end
+  x: 0.0
+  y: 100.0
+  z: 0.0
+  pitch: 0.0
+  yaw: 0.0
