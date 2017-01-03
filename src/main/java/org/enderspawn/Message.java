@@ -77,7 +77,7 @@ public class Message {
 	 * If the CommandSender is not a Player, any ChatColors in the
 	 * message will be stripped.
 	 * 
-	 * @param sende:  the CommandSender
+	 * @param sender:  the CommandSender
 	 * @param format  A format string
 	 * @param args    Arguments corresponding to @param format
 	 **/

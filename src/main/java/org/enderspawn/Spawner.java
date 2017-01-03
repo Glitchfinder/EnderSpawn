@@ -19,12 +19,16 @@ package org.enderspawn;
 
 //* IMPORTS: JDK/JRE
 	import java.sql.Timestamp;
-	import java.util.ArrayList;
-	import java.util.Date;
-	import java.util.List;
-	import java.util.Random;
-//* IMPORTS: BUKKIT
+	import java.util.*;
+	//* IMPORTS: BUKKIT
+	import net.minecraft.server.v1_10_R1.BossBattle;
+	import net.minecraft.server.v1_10_R1.ChatComponentText;
+	import net.minecraft.server.v1_10_R1.IChatBaseComponent;
+	import org.bukkit.Material;
+	import org.bukkit.boss.BarFlag;
+	import org.bukkit.boss.BossBar;
 	import org.bukkit.entity.EnderDragon;
+	import org.bukkit.entity.Entity;
 	import org.bukkit.entity.EntityType;
 	import org.bukkit.entity.Player;
 	import org.bukkit.Location;
@@ -163,7 +167,18 @@ public class Spawner implements Runnable {
 			long spawnMinutes = this.plugin.config.minSpawnMinutes;
 
 			if (currentTime.getTime() >= (lastDeath.getTime() + (spawnMinutes * 60000))) {
-				world.spawnCreature(location, EntityType.ENDER_DRAGON);
+
+				EnderDragon enderDragon = (EnderDragon)world.spawnEntity(location, EntityType.ENDER_DRAGON);
+				enderDragon.setPhase(EnderDragon.Phase.CIRCLING);
+				enderDragon.setAI(true);
+
+				List<Location> endCrystalPositions = (List<Location>)plugin.config.getList("CrystalPositions");
+				if(!endCrystalPositions.isEmpty())
+					for(Location loc : endCrystalPositions) {
+						if(loc.getWorld().equals(world)) {
+							world.spawnEntity(loc, EntityType.ENDER_CRYSTAL);
+						}
+					}
 				this.plugin.data.lastDeath.put(worldName, new Timestamp(0));
 			}
 		}
