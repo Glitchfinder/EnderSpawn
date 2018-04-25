@@ -3,9 +3,6 @@ DestroyBlocks: false
 # Whether or not the EnderDragon spawns an egg. If set to true while the portal
 # is disabled, it will drop as an item rather than being placed as a block.
 SpawnEgg: true
-# Whether or not the EnderDragon spawns a portal. If set to true while the egg
-# is disabled, the portal will spawn without an egg.
-SpawnPortal: false
 # Whether or not EnderDragon eggs teleport when hit by a player. This setting is
 # to help disable creative theft, especially since LogBlock doesn't log the egg
 # being teleported.
@@ -22,22 +19,14 @@ EXPResetMinutes: 1200
 # The maximum distance from the EnderDragon a player must be to receive
 # experience from the kill.
 EXPMaxDistance: 75
-# Whether or not the plugin will give a custom amount of experience to those
-# who have slain the EnderDragon.
-UseCustomEXPTotal: false
 # The custom amount of experience to award players who have slain the
-# EnderDragon. Does nothing if the option above is disabled.
+# EnderDragon.
 # NOTE: The default value, 20000, gives 105 levels.
-CustomEXPTotal: 20000
+EXPTotal: 20000
 # Worlds in which the Enderdragon will spawn.
 Worlds:
   # The name of the world to manage. Not case sensitive.
   world_the_end:
-    # The maximum number of dragons in the world. The plugin will attempt to
-    # spawn a new dragon every time the cooldown for the world is up and a
-    # player logs into the world or teleports into the world. The spawn will be
-    # canceled if there are no players near the spawn point.
-    MaxDragons: 1
     # The actual spawn point for the world.
     SpawnPoint:
       X: 0

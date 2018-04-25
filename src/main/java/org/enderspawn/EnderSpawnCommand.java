@@ -20,10 +20,12 @@ package org.enderspawn;
 //* IMPORTS: JDK/JRE
 	//* NOT NEEDED
 //* IMPORTS: BUKKIT
+	import org.bukkit.Bukkit;
 	import org.bukkit.command.Command;
 	import org.bukkit.command.CommandExecutor;
 	import org.bukkit.command.CommandSender;
 	import org.bukkit.entity.Player;
+	import org.bukkit.OfflinePlayer;
 //* IMPORTS: OTHER
 	//* NOT NEEDED
 
@@ -85,7 +87,16 @@ public class EnderSpawnCommand implements CommandExecutor {
 		}
 
 		String player = args[1].toUpperCase().toLowerCase();
-		plugin.data.bannedPlayers.put(player, reason);
+		OfflinePlayer check = Bukkit.getOfflinePlayer(player);
+
+		if(!check.hasPlayedBefore()) {
+			String message = "The player '" + args[1];
+			message += "' does not seem to exist.";
+			Message.info(sender, message);
+			return false;
+		}
+
+		plugin.data.bannedPlayers.put(check.getUniqueId(), reason);
 		plugin.saveData();
 
 		String message = "Banned " + args[1];
@@ -104,7 +115,16 @@ public class EnderSpawnCommand implements CommandExecutor {
 			return false;
 
 		String player = args[1].toUpperCase().toLowerCase();
-		plugin.data.bannedPlayers.remove(player);
+		OfflinePlayer check = Bukkit.getOfflinePlayer(player);
+
+		if(!check.hasPlayedBefore()) {
+			String message = "The player '" + args[1];
+			message += "' does not seem to exist.";
+			Message.info(sender, message);
+			return false;
+		}
+
+		plugin.data.bannedPlayers.remove(check.getUniqueId());
 		plugin.saveData();
 
 		String message = "Allowed " + args[1];
@@ -122,7 +142,16 @@ public class EnderSpawnCommand implements CommandExecutor {
 			return false;
 
 		String player = args[1].toUpperCase().toLowerCase();
-		String reason = plugin.data.bannedPlayers.get(player);
+		OfflinePlayer check = Bukkit.getOfflinePlayer(player);
+
+		if(!check.hasPlayedBefore()) {
+			String message = "The player '" + args[1];
+			message += "' does not seem to exist.";
+			Message.info(sender, message);
+			return false;
+		}
+
+		String reason = plugin.data.bannedPlayers.get(check.getUniqueId());
 
 		if (reason == null) {
 			String message = args[1];
@@ -169,7 +198,16 @@ public class EnderSpawnCommand implements CommandExecutor {
 			return false;
 
 		String player = args[1].toUpperCase().toLowerCase();
-		plugin.data.players.remove(player);
+		OfflinePlayer check = Bukkit.getOfflinePlayer(player);
+
+		if(!check.hasPlayedBefore()) {
+			String message = "The player '" + args[1];
+			message += "' does not seem to exist.";
+			Message.info(sender, message);
+			return false;
+		}
+
+		plugin.data.players.remove(check.getUniqueId());
 		plugin.saveData();
 
 		String message = "Allowed " + args[1];

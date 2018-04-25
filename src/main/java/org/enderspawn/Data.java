@@ -22,27 +22,20 @@ package org.enderspawn;
 	import java.sql.Timestamp;
 	import java.util.HashMap;
 	import java.util.Map;
+	import java.util.UUID;
 //* IMPORTS: BUKKIT
 	import org.bukkit.entity.EnderDragon;
 //* IMPORTS: OTHER
 	//* NOT NEEDED
 
 public class Data implements Serializable {
-	public Map<String, Timestamp>			players;
-	public Map<String, String>			bannedPlayers;
+	public Map<UUID, Timestamp>			players;
+	public Map<UUID, String>			bannedPlayers;
 	public Map<String, Timestamp>			lastDeath;
-	public Map<String, Map<Integer, Integer>>	currentHealth;
-	public Map<String, Map<Integer, Integer>>	hitCount;
-	public Map<String, Map<Integer, Map<String, Integer>>>	damage;
-	public transient Map<String, Map<EnderDragon, Integer>>	dragons;
 
 	public Data() {
-		players		= new HashMap<String, Timestamp>();
-		bannedPlayers	= new HashMap<String, String>();
+		players		= new HashMap<UUID, Timestamp>();
+		bannedPlayers	= new HashMap<UUID, String>();
 		lastDeath	= new HashMap<String, Timestamp>();
-		currentHealth	= new HashMap<String, Map<Integer, Integer>>();
-		hitCount	= new HashMap<String, Map<Integer, Integer>>();
-		damage		= new HashMap<String, Map<Integer, Map<String, Integer>>>();
-		dragons		= new HashMap<String, Map<EnderDragon, Integer>>();
 	}
 }

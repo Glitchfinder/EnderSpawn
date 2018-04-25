@@ -26,11 +26,18 @@ package org.enderspawn;
 	import java.io.ObjectOutputStream;
 	import java.io.OutputStream;
 	import java.util.Date;
+	import java.util.HashMap;
+	import java.util.logging.Logger;
+	import java.util.Map;
+	import java.util.UUID;
 //* IMPORTS: BUKKIT
+	import org.bukkit.boss.BossBar;
+	import org.bukkit.Bukkit;
 	import org.bukkit.command.CommandSender;
 	import org.bukkit.entity.Player;
+	import org.bukkit.OfflinePlayer;
 	import org.bukkit.plugin.java.JavaPlugin;
-	import java.util.logging.Logger;
+	import org.bukkit.World;
 //* IMPORTS: OTHER
 	//* NOT NEEDED
 
@@ -43,12 +50,14 @@ public class EnderSpawn extends JavaPlugin {
 	private	EnderSpawnListener	listener;
 	private	EnderSpawnCommand	command;
 	public	Logger			log;
+	public	Map<World, BossBar>	bars;
 
 	public void onLoad() {
 		this.log	= this.getLogger();
 		this.data	= new Data();
 		loadData();
 
+		bars = new HashMap<World, BossBar>();
 		copyConfig("config.yml");
 		File configurationFile = new File(getDataFolder(), "config.yml");
 		this.config	= new Configuration(configurationFile, log, this);
@@ -119,8 +128,18 @@ public class EnderSpawn extends JavaPlugin {
 		}
 
 		String playerName = (name == null) ? sender.getName() : name;
+		OfflinePlayer check = Bukkit.getOfflinePlayer(playerName);
 
-		if (data.bannedPlayers.get(playerName) != null) {
+		if(!check.hasPlayedBefore()) {
+			String message = "The player '" + playerName;
+			message += "' does not seem to exist.";
+			Message.info(sender, message);
+			return false;
+		}
+
+		UUID id = check.getUniqueId();
+
+		if (data.bannedPlayers.get(id) != null) {
 			String message = pronoun + (other ? " is " : " are ");
 			message += "not allowed to receive experience from the Ender Dragon.";
 			Message.info(sender, message);
@@ -185,11 +204,21 @@ public class EnderSpawn extends JavaPlugin {
 	public boolean showStatus(Player player, String name) {
 		String playerName = (name == null) ? player.getName() : name;
 		String caselessPlayerName = playerName.toUpperCase().toLowerCase();
+		OfflinePlayer check = Bukkit.getOfflinePlayer(caselessPlayerName);
+
+		if(!check.hasPlayedBefore()) {
+			String message = "The player '" + playerName;
+			message += "' does not seem to exist.";
+			Message.info(player, message);
+			return false;
+		}
+
+		UUID id = check.getUniqueId();
 
 		long time = 0;
 
-		if (data.players.get(caselessPlayerName) != null)
-			time = data.players.get(caselessPlayerName).getTime();
+		if (data.players.get(id) != null)
+			time = data.players.get(id).getTime();
 
 		return status(player, time, name);
 	}

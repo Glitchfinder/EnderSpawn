@@ -22,28 +22,29 @@ package org.enderspawn;
 	import java.util.ArrayList;
 	import java.util.Date;
 	import java.util.List;
+	import java.util.UUID;
 //* IMPORTS: BUKKIT
-	import org.bukkit.block.Block;
-	import org.bukkit.block.BlockState;
+	import org.bukkit.boss.BossBar;
 	import org.bukkit.Chunk;
 	import org.bukkit.entity.EnderDragon;
 	import org.bukkit.entity.Entity;
 	import org.bukkit.entity.LivingEntity;
 	import org.bukkit.entity.Player;
 	import org.bukkit.event.block.BlockFromToEvent;
-	import org.bukkit.event.entity.EntityCreatePortalEvent;
+	import org.bukkit.event.entity.EntityDamageEvent;
 	import org.bukkit.event.entity.EntityDeathEvent;
 	import org.bukkit.event.entity.EntityExplodeEvent;
 	import org.bukkit.event.player.PlayerChangedWorldEvent;
 	import org.bukkit.event.player.PlayerJoinEvent;
+	import org.bukkit.event.player.PlayerQuitEvent;
 	import org.bukkit.event.EventHandler;
 	import org.bukkit.event.EventPriority;
 	import org.bukkit.event.Listener;
 	import org.bukkit.event.world.ChunkUnloadEvent;
 	import org.bukkit.inventory.ItemStack;
 	import org.bukkit.Location;
+	import org.bukkit.Material;
 	import org.bukkit.plugin.PluginManager;
-	import org.bukkit.PortalType;
 	import org.bukkit.World;
 //* IMPORTS: OTHER
 	//* NOT NEEDED
@@ -80,8 +81,17 @@ public class EnderSpawnListener implements Listener {
 			if (!(entity instanceof EnderDragon))
 				continue;
 
+			if (plugin.bars.containsKey(entity.getWorld())) {
+				BossBar bar = plugin.bars.get(entity.getWorld());
+				bar.setVisible(false);
+				for (Player player : bar.getPlayers()) {
+					bar.removePlayer(player);
+				}
+			}
+
 			EntityDeathEvent newEvent;
 			newEvent = new EntityDeathEvent((LivingEntity) entity, new ArrayList());
+			newEvent.setDroppedExp(1);
 			plugin.getServer().getPluginManager().callEvent(newEvent);
 			entity.remove();
 		}
@@ -90,7 +100,7 @@ public class EnderSpawnListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onDragonEggTeleport(BlockFromToEvent event) {
-		if (event.getBlock().getType().getId() != 122)
+		if (event.getBlock().getType() != Material.DRAGON_EGG)
 			return;
 
 		if (plugin.config.teleportEgg)
@@ -112,55 +122,38 @@ public class EnderSpawnListener implements Listener {
 		return;
 	}
 
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void onEntityCreatePortal(EntityCreatePortalEvent event) {
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onEntityDamaged(EntityDamageEvent event) {
 		Entity entity = event.getEntity();
 
 		if (!(entity instanceof EnderDragon))
 			return;
 
-		List<BlockState> blocks = new ArrayList(event.getBlocks());
+		if (!plugin.bars.containsKey(entity.getWorld()))
+			return;
 
-		for (BlockState block : event.getBlocks()) {
-			if (block.getType().getId() == 122 && !plugin.config.spawnEgg)
-				blocks.remove(block);
+		LivingEntity e = (LivingEntity) entity;
+		double percent = Math.max(0D, (e.getHealth() - event.getDamage()) / e.getMaxHealth());
+		BossBar bar = plugin.bars.get(entity.getWorld());
+		bar.setProgress(percent);
 
-			if (plugin.config.spawnPortal)
+		for (Player player : bar.getPlayers()) {
+			if (player.getLocation().distance(entity.getLocation()) > plugin.config.expMaxDistance)
+				bar.removePlayer(player);
+			if (player.getWorld() != entity.getWorld());
+				bar.removePlayer(player);
+			if (!player.isOnline())
+				bar.removePlayer(player);
+		}
+
+		for (Player player : entity.getWorld().getPlayers()) {
+			if (player.getLocation().distance(entity.getLocation()) > plugin.config.expMaxDistance)
+				continue;
+			if (bar.getPlayers().contains(player))
 				continue;
 
-			if (block.getType().getId() == 7 || block.getType().getId() == 119)
-				blocks.remove(block);
-			else if (block.getType().getId() == 0 || block.getType().getId() == 50)
-				blocks.remove(block);
-			else if (block.getType().getId() == 122 && plugin.config.spawnEgg) {
-				blocks.remove(block);
-
-				Location location = entity.getLocation();
-				ItemStack item = new ItemStack(block.getType());
-
-				entity.getWorld().dropItemNaturally(location, item);
-			}
+			bar.addPlayer(player);
 		}
-
-		if (blocks.size() != event.getBlocks().size()) {
-			event.setCancelled(true);
-
-			LivingEntity newEntity = (LivingEntity) entity;
-			PortalType type = event.getPortalType();
-			EntityCreatePortalEvent newEvent;
-			newEvent = new EntityCreatePortalEvent(newEntity, blocks, type);
-
-			plugin.getServer().getPluginManager().callEvent(newEvent);
-
-			if (!newEvent.isCancelled()) {
-				for(BlockState blockState : blocks) {
-					int id		= blockState.getTypeId();
-					byte data	= blockState.getRawData();
-					blockState.getBlock().setTypeIdAndData(id, data, false);
-				}
-			}
-		}
-		return;
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -170,20 +163,29 @@ public class EnderSpawnListener implements Listener {
 		if (!(entity instanceof EnderDragon))
 			return;
 
-		int droppedEXP = event.getDroppedExp();
-
-		if (droppedEXP <= 0)
+		if (event.getDroppedExp() == 1)
 			return;
 
-		if (plugin.config.dropExp) {
-			if (plugin.config.useCustomExp)
-				event.setDroppedExp(plugin.config.customExp);
-
-			return;
+		if (plugin.bars.containsKey(entity.getWorld())) {
+			BossBar bar = plugin.bars.get(entity.getWorld());
+			bar.setVisible(false);
+			for (Player player : bar.getPlayers()) {
+				bar.removePlayer(player);
+			}
 		}
 
-		if (plugin.config.useCustomExp)
-			droppedEXP = plugin.config.customExp;
+		if (plugin.config.spawnEgg) {
+			Location location = entity.getLocation();
+			ItemStack item = new ItemStack(Material.DRAGON_EGG, 1);
+			event.getDrops().add(item);
+		}
+
+		if (plugin.config.dropExp) {
+			event.setDroppedExp(plugin.config.customExp);
+			return;
+		}
+		
+		int droppedEXP = plugin.config.customExp;
 
 		event.setDroppedExp(0);
 
@@ -208,12 +210,12 @@ public class EnderSpawnListener implements Listener {
 			if (distance > plugin.config.expMaxDistance)
 				continue;
 
-			String playerName = player.getName().toUpperCase().toLowerCase();
+			UUID playerID = player.getUniqueId();
 
-			if (plugin.data.bannedPlayers.containsKey(playerName))
+			if (plugin.data.bannedPlayers.containsKey(playerID))
 				continue;
 
-			Timestamp time = plugin.data.players.get(playerName);
+			Timestamp time = plugin.data.players.get(playerID);
 
 			long requiredTime = new Date().getTime();
 			requiredTime -= plugin.config.expResetMinutes * 60000;
@@ -230,7 +232,7 @@ public class EnderSpawnListener implements Listener {
 				continue;
 
 			Timestamp now = new Timestamp(new Date().getTime());
-			plugin.data.players.put(playerName, now);
+			plugin.data.players.put(playerID, now);
 		}
 
 		plugin.saveData();
@@ -241,11 +243,23 @@ public class EnderSpawnListener implements Listener {
 		World world = event.getPlayer().getWorld();
 		String worldName = world.getName().toUpperCase().toLowerCase();
 
+		for (World w : plugin.bars.keySet()) {
+			if (w != world)
+				plugin.bars.get(w).removePlayer(event.getPlayer());
+		}
+
 		if (!plugin.config.worlds.containsKey(worldName))
 			return;
 
 		plugin.spawner.start();
 		plugin.showStatus(event.getPlayer(), null);
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onPlayerQuit(PlayerQuitEvent event) {
+		for (World w : plugin.bars.keySet()) {
+			plugin.bars.get(w).removePlayer(event.getPlayer());
+		}
 	}
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)

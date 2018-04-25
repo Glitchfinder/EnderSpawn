@@ -24,6 +24,11 @@ package org.enderspawn;
 	import java.util.List;
 	import java.util.Random;
 //* IMPORTS: BUKKIT
+	import org.bukkit.boss.BarColor;
+	import org.bukkit.boss.BarFlag;
+	import org.bukkit.boss.BarStyle;
+	import org.bukkit.boss.BossBar;
+	import org.bukkit.Bukkit;
 	import org.bukkit.entity.EnderDragon;
 	import org.bukkit.entity.EntityType;
 	import org.bukkit.entity.Player;
@@ -145,13 +150,7 @@ public class Spawner implements Runnable {
 
 			List dragons = new ArrayList(world.getEntitiesByClass(EnderDragon.class));
 
-			int maxDragons = plugin.config.worlds.get(worldName);
-			if (dragons.size() >= maxDragons)
-				continue;
-
-			int count = 0;
-
-			if (count >= maxDragons)
+			if (dragons.size() > 0)
 				continue;
 
 			Timestamp currentTime 	= new Timestamp(new Date().getTime());
@@ -163,8 +162,24 @@ public class Spawner implements Runnable {
 			long spawnMinutes = this.plugin.config.minSpawnMinutes;
 
 			if (currentTime.getTime() >= (lastDeath.getTime() + (spawnMinutes * 60000))) {
-				world.spawnCreature(location, EntityType.ENDER_DRAGON);
+				world.spawnEntity(location, EntityType.ENDER_DRAGON);
 				this.plugin.data.lastDeath.put(worldName, new Timestamp(0));
+				BossBar bar;
+
+				if (!plugin.bars.containsKey(world)) {
+					bar = Bukkit.createBossBar("Ender Dragon", BarColor.BLUE, BarStyle.SEGMENTED_20, BarFlag.PLAY_BOSS_MUSIC);
+					plugin.bars.put(world, bar);
+				} else
+					bar = plugin.bars.get(world);
+				
+				bar.setProgress(1.0);
+				for (Player player : world.getPlayers()) {
+					if (player.getLocation().distance(location) > plugin.config.expMaxDistance)
+						continue;
+
+					bar.addPlayer(player);
+				}
+				bar.setVisible(true);
 			}
 		}
 		stop();

@@ -25,6 +25,7 @@ package org.enderspawn;
 	import java.util.List;
 	import java.util.logging.Logger;
 	import java.util.Map;
+	import java.util.UUID;
 //* IMPORTS: BUKKIT
 	import org.bukkit.configuration.ConfigurationSection;
 	import org.bukkit.configuration.file.YamlConfiguration;
@@ -45,9 +46,7 @@ public class Configuration extends YamlConfiguration {
 
 	public	boolean	destroyBlocks	= false;
 	public	boolean	spawnEgg	= true;
-	public	boolean	spawnPortal	= false;
 	public	boolean teleportEgg	= false;
-	public	boolean	useCustomExp	= false;
 	public	boolean	dropExp		= false;
 	public	long	maxSpawnMinutes	= 5;
 	public	long	minSpawnMinutes	= 5;
@@ -72,22 +71,15 @@ public class Configuration extends YamlConfiguration {
 			defaults = true;
 		}
 
-		if (contains("Configuration")) {
-			loadLegacy();
-			return;
-		}
-
 		destroyBlocks	= getBoolean("DestroyBlocks",		destroyBlocks);
 		spawnEgg	= getBoolean("SpawnEgg",		spawnEgg);
-		spawnPortal	= getBoolean("SpawnPortal",		spawnPortal);
 		teleportEgg	= getBoolean("EggsCanTeleport",		teleportEgg);
 		maxSpawnMinutes	= getLong("MaxRespawnMinutes",		maxSpawnMinutes);
 		minSpawnMinutes	= getLong("MinRespawnMinutes",		minSpawnMinutes);
 		expResetMinutes	= getLong("EXPResetMinutes",		expResetMinutes);
 		expMaxDistance	= getLong("EXPMaxDistance",		expMaxDistance);
-		useCustomExp	= getBoolean("UseCustomEXPTotal",	useCustomExp);
 		dropExp		= getBoolean("DropEXP",			dropExp);
-		customExp	= getInt("CustomEXPTotal",		customExp);
+		customExp	= getInt("EXPTotal",			customExp);
 
 		getWorlds();
 
@@ -95,39 +87,18 @@ public class Configuration extends YamlConfiguration {
 			save();
 	}
 
-	public void loadLegacy() {
-		log.info("Converting configuration to the current format.");
-		destroyBlocks	= getBoolean("Configuration.DestroyBlocks",	destroyBlocks);
-		spawnEgg	= getBoolean("Configuration.SpawnEgg",		spawnEgg);
-		spawnPortal	= getBoolean("Configuration.SpawnPortal",	spawnPortal);
-		teleportEgg	= getBoolean("Configuration.EggsCanTeleport",	teleportEgg);
-		maxSpawnMinutes	= getLong("Configuration.MaxRespawnMinutes",	maxSpawnMinutes);
-		minSpawnMinutes	= getLong("Configuration.MinRespawnMinutes",	minSpawnMinutes);
-		expResetMinutes	= getLong("Configuration.EXPResetMinutes",	expResetMinutes);
-		expMaxDistance	= getLong("Configuration.EXPMaxDistance",	expMaxDistance);
-		useCustomExp	= getBoolean("Configuration.UseCustomEXPTotal",	useCustomExp);
-		customExp	= getInt("Configuration.CustomEXPTotal",	customExp);
-
-		addWorlds();
-		getPlayers();
-		getBannedPlayers();
-		save();
-	}
-
 	public void save() {
 		YamlConfiguration newConfig = new YamlConfiguration();
 
 		newConfig.set("DestroyBlocks",		destroyBlocks);
 		newConfig.set("SpawnEgg",		spawnEgg);
-		newConfig.set("SpawnPortal",		spawnPortal);
 		newConfig.set("EggsCanTeleport",	teleportEgg);
 		newConfig.set("MaxRespawnMinutes",	maxSpawnMinutes);
 		newConfig.set("MinRespawnMinutes",	minSpawnMinutes);
 		newConfig.set("EXPResetMinutes",	expResetMinutes);
 		newConfig.set("EXPMaxDistance",		expMaxDistance);
-		newConfig.set("UseCustomEXPTotal",	useCustomExp);
 		newConfig.set("DropEXP",		dropExp);
-		newConfig.set("CustomEXPTotal",		customExp);
+		newConfig.set("EXPTotal",		customExp);
 
 		ConfigurationSection worldSection = newConfig.createSection("Worlds");
 
@@ -148,7 +119,6 @@ public class Configuration extends YamlConfiguration {
 				continue;
 
 			ConfigurationSection world = worldSection.createSection(key);
-			world.set("MaxDragons", worlds.get(key));
 
 			ConfigurationSection spawn = world.createSection("SpawnPoint");
 			spawn.set("X", xCoords.get(key));
@@ -183,20 +153,27 @@ public class Configuration extends YamlConfiguration {
 				continue;
 
 			String player = (String) key;
+			UUID playerID;
+
 			if (!playerValues.containsKey(player))
 				continue;
+
+			try {
+				playerID = UUID.fromString((String) key);
+			} catch (IllegalArgumentException e) {
+				continue;
+			}
 
 			Object tempLong = playerValues.get(player);
 			if (!(tempLong instanceof Long))
 				continue;
 
 			Timestamp time = new Timestamp((Long) tempLong);
-			player = player.toUpperCase().toLowerCase();
 
 			if (currentTime.getTime() >= (time.getTime() + (expResetMinutes * 60000)))
 				continue;
 
-			this.plugin.data.players.put(player, time);
+			this.plugin.data.players.put(playerID, time);
 		}
 	}
 
@@ -217,8 +194,16 @@ public class Configuration extends YamlConfiguration {
 				continue;
 
 			String player = (String) key;
+			UUID playerID;
+
 			if (!playerValues.containsKey(player))
 				continue;
+
+			try {
+				playerID = UUID.fromString((String) key);
+			} catch (IllegalArgumentException e) {
+				continue;
+			}
 
 			Object tempString = playerValues.get(player);
 			if (!(tempString instanceof String))
@@ -227,7 +212,7 @@ public class Configuration extends YamlConfiguration {
 			String banReason = (String) tempString;
 			player = player.toUpperCase().toLowerCase();
 
-			this.plugin.data.bannedPlayers.put(player, banReason);
+			this.plugin.data.bannedPlayers.put(playerID, banReason);
 		}
 	}
 
@@ -257,9 +242,9 @@ public class Configuration extends YamlConfiguration {
 
 			ConfigurationSection section = (ConfigurationSection) tempObject;
 
-			worlds.put(name, section.getInt("MaxDragons", 1));
+			worlds.put(name, 0);
 			xCoords.put(name, section.getInt("X", 0));
-			yCoords.put(name, section.getInt("Y", 128));
+			yCoords.put(name, section.getInt("Y", 100));
 			zCoords.put(name, section.getInt("Z", 0));
 		}
 	}
@@ -272,9 +257,9 @@ public class Configuration extends YamlConfiguration {
 				continue;
 
 			String name = world.getName().toUpperCase().toLowerCase();
-			worlds.put(name, getInt("Configuration.MaxDragons", 1));
+			worlds.put(name, 0);
 			xCoords.put(name, 0);
-			yCoords.put(name, 128);
+			yCoords.put(name, 100);
 			zCoords.put(name, 0);
 
 			long deathLong = getLong("LastDeath", 0);
